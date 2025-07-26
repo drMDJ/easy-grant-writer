@@ -1,0 +1,915 @@
+import React, { useState, useEffect, useCallback } from 'react';
+import { useDropzone } from 'react-dropzone';
+import { Loader, UploadCloud, FileText, X, Download, ChevronsRight, Award, ClipboardCheck, DollarSign, Users, Clock, BarChart2, Briefcase, Target, CheckCircle, ArrowRight, BrainCircuit, Building, FileSignature, Eye, Sparkles, Copy, FileDown, RefreshCw, AlertTriangle, Check } from 'lucide-react';
+
+// --- Helper Components ---
+
+// Typing effect component
+const Typewriter = ({ text, onComplete }) => {
+    const [displayText, setDisplayText] = useState('');
+
+    useEffect(() => {
+        let i = 0;
+        setDisplayText(''); // Reset on text change
+        const typingInterval = setInterval(() => {
+            if (i < text.length) {
+                setDisplayText(prev => prev + text.charAt(i));
+                i++;
+            } else {
+                clearInterval(typingInterval);
+                if (onComplete) onComplete();
+            }
+        }, 10); // Faster typing speed
+
+        return () => clearInterval(typingInterval);
+    }, [text, onComplete]);
+
+    // Basic markdown to HTML
+    const markdownToHtml = (mdText) => {
+        if (!mdText) return '';
+        return mdText
+            .replace(/^# (.*$)/gim, '<h1 class="text-3xl font-bold mb-4">$1</h1>')
+            .replace(/^## (.*$)/gim, '<h2 class="text-2xl font-bold text-gray-800 mb-4 mt-6">$1</h2>')
+            .replace(/^### (.*$)/gim, '<h3 class="text-xl font-semibold text-gray-700 mb-3 mt-4">$1</h3>')
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\*(.*?)\*/g, '<em>$1</em>')
+            .replace(/^\* (.*$)/gim, '<li class="ml-6 mb-2 list-disc">$1</li>')
+            .replace(/\n/g, '<br />');
+    }
+
+    return <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: markdownToHtml(displayText) }} />;
+};
+
+// --- Landing Page Component ---
+const LandingPage = ({ onStart }) => {
+    const features = [
+        { icon: <BrainCircuit />, title: "AI-Powered Analysis", description: "Deeply analyzes your funding documents to extract key requirements and priorities." },
+        { icon: <Sparkles />, title: "Strategic Suggestions", description: "Recommends project concepts tailored to funder priorities and your experience." },
+        { icon: <FileSignature />, title: "Section-by-Section Generation", description: "Generate only the sections you need, with real-time progress visualization." },
+        { icon: <Target />, title: "Optimized for Scoring", description: "Crafts persuasive, highly-readable content designed to maximize your evaluation score." },
+    ];
+
+    return (
+        <div className="bg-white text-gray-800">
+            <header className="container mx-auto px-6 py-4 flex justify-between items-center">
+                <div>
+                    <h1 className="text-2xl font-bold text-blue-600">Easy Grant Writer</h1>
+                    <p className="text-sm text-gray-500 -mt-1">Your AI Partner in Grant Writing</p>
+                </div>
+                <button onClick={onStart} className="bg-blue-600 text-white font-semibold px-6 py-2 rounded-lg hover:bg-blue-700 transition">Get Started</button>
+            </header>
+
+            <main>
+                <section className="text-center py-20 px-6 bg-gray-50">
+                    <h2 className="text-5xl font-extrabold mb-4">The Easy Way to Write Winning Grant Proposals.</h2>
+                    <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">From RFP to ready-to-submit, faster. Leverage AI to analyze funding opportunities, develop strategic concepts, and write compelling proposals that get noticed.</p>
+                    <button onClick={onStart} className="bg-blue-600 text-white font-bold text-lg px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300">
+                        Start Your Proposal Now <ArrowRight className="inline ml-2" />
+                    </button>
+                </section>
+
+                <section id="features" className="py-20 px-6">
+                    <div className="container mx-auto">
+                        <h3 className="text-4xl font-bold text-center mb-12">Features</h3>
+                        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                            {features.map((feature, i) => (
+                                <div key={i} className="bg-gray-50 p-8 rounded-2xl border border-gray-200 text-center">
+                                    <div className="bg-blue-100 text-blue-600 p-4 rounded-full inline-block mb-4">{React.cloneElement(feature.icon, { size: 32 })}</div>
+                                    <h4 className="text-xl font-semibold mb-2">{feature.title}</h4>
+                                    <p className="text-gray-600">{feature.description}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+
+                <section id="how-it-works" className="py-20 px-6 bg-gray-50">
+                    <div className="container mx-auto">
+                        <h3 className="text-4xl font-bold text-center mb-12">How It Works</h3>
+                        <div className="relative">
+                            <div className="hidden md:block absolute top-1/2 left-0 w-full h-0.5 bg-gray-300 -translate-y-1/2"></div>
+                             <div className="grid md:grid-cols-3 gap-12 text-center relative">
+                                <div className="space-y-4">
+                                    <div className="bg-white border-2 border-blue-500 text-blue-500 w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold mx-auto">1</div>
+                                    <h4 className="text-xl font-semibold">Upload & Analyze</h4>
+                                    <p className="text-gray-600">Provide the funder's guidelines (PDF, TXT, or pasted text). Our AI breaks it down in seconds.</p>
+                                </div>
+                                <div className="space-y-4">
+                                     <div className="bg-white border-2 border-blue-500 text-blue-500 w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold mx-auto">2</div>
+                                    <h4 className="text-xl font-semibold">Develop & Refine</h4>
+                                    <p className="text-gray-600">Get project concept suggestions, input your organization's details, and select the proposal sections you need.</p>
+                                </div>
+                                <div className="space-y-4">
+                                     <div className="bg-white border-2 border-blue-500 text-blue-500 w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold mx-auto">3</div>
+                                    <h4 className="text-xl font-semibold">Generate & Download</h4>
+                                    <p className="text-gray-600">Watch as your proposal is written in real-time. Review the final document and download it with one click.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="pricing" className="py-20 px-6">
+                    <div className="container mx-auto max-w-4xl">
+                        <h3 className="text-4xl font-bold text-center mb-12">Pricing</h3>
+                        <div className="bg-white p-10 rounded-2xl shadow-lg border border-gray-200 text-center">
+                            <h4 className="text-3xl font-bold mb-4">Easy Grant Writer Pro</h4>
+                            <p className="text-gray-600 mb-6">Access all features, unlimited proposals, and priority support.</p>
+                            <div className="text-5xl font-extrabold mb-6">$49 <span className="text-xl font-medium text-gray-500">/ month</span></div>
+                            <button onClick={onStart} className="w-full bg-blue-600 text-white font-bold text-lg px-8 py-4 rounded-xl shadow-lg hover:bg-blue-700 transition-all duration-300">
+                                Start Your Free 7-Day Trial
+                            </button>
+                        </div>
+                    </div>
+                </section>
+            </main>
+            <footer className="container mx-auto px-6 py-10 text-center text-gray-500">
+                <p className="text-sm">
+                    <strong>Disclaimer:</strong> Easy Grant Writer is a powerful tool designed to assist in creating high-quality grant proposals. While it aims to produce competitive and compliant documents, its use does not guarantee a grant award. Funding decisions depend on numerous factors, including the merits of the project, the funder's priorities, and the quality of competing applications.
+                </p>
+                <p className="text-xs mt-4">&copy; {new Date().getFullYear()} Easy Grant Writer. All Rights Reserved.</p>
+            </footer>
+        </div>
+    );
+};
+
+
+// --- Main Application Component ---
+export default function GrantWizard() {
+    // --- STATE MANAGEMENT REFACTOR ---
+    // Instead of one large state object, we use individual states for clarity and reliability.
+    const [currentPage, setCurrentPage] = useState('landing');
+    const [currentStep, setCurrentStep] = useState(1);
+    const [file, setFile] = useState(null);
+    const [pastedText, setPastedText] = useState('');
+    const [url, setUrl] = useState('');
+    const [extractedText, setExtractedText] = useState('');
+    const [analysisResult, setAnalysisResult] = useState({ summary: '', scopes: [], programs: [], focusAreas: [], requiredSections: [] });
+    const [selectedScopes, setSelectedScopes] = useState([]);
+    const [selectedPrograms, setSelectedPrograms] = useState([]);
+    const [selectedFocusAreas, setSelectedFocusAreas] = useState([]);
+    const [concepts, setConcepts] = useState([]);
+    const [selectedConcept, setSelectedConcept] = useState(null);
+    const [orgDetails, setOrgDetails] = useState({ name: '', mission: '', pastExperience: '', maxBudget: '', timeFrame: '' });
+    const [sectionsToGenerate, setSectionsToGenerate] = useState({});
+    const [generatedSections, setGeneratedSections] = useState({});
+    const [finalProposal, setFinalProposal] = useState('');
+    const [finalReview, setFinalReview] = useState('');
+    const [refinementRequest, setRefinementRequest] = useState('');
+    const [error, setError] = useState('');
+    
+    // Control state
+    const [isLoading, setIsLoading] = useState(false);
+    const [pdfjsLoaded, setPdfjsLoaded] = useState(false);
+    const [exportLibsLoaded, setExportLibsLoaded] = useState(false);
+    const [copyStatus, setCopyStatus] = useState('Copy for Word/Docs');
+    const [guidanceAcknowledged, setGuidanceAcknowledged] = useState(false);
+    const [reviewAcknowledged, setReviewAcknowledged] = useState(false);
+
+    // --- Library Loading ---
+    useEffect(() => {
+        const pdfScriptId = 'pdfjs-script';
+        if (!document.getElementById(pdfScriptId)) {
+            const script = document.createElement('script');
+            script.id = pdfScriptId;
+            script.src = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js";
+            script.async = true;
+            script.onload = () => {
+                window.pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`;
+                setPdfjsLoaded(true);
+            };
+            script.onerror = () => setError("Failed to load PDF library.");
+            document.body.appendChild(script);
+        }
+
+        const jspdfScriptId = 'jspdf-script';
+        if (!document.getElementById(jspdfScriptId)) {
+            const script = document.createElement('script');
+            script.id = jspdfScriptId;
+            script.src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
+            script.async = true;
+            script.onload = () => {
+                const h2cScript = document.createElement('script');
+                h2cScript.src = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
+                h2cScript.async = true;
+                h2cScript.onload = () => setExportLibsLoaded(true);
+                document.body.appendChild(h2cScript);
+            };
+            document.body.appendChild(script);
+        }
+    }, []);
+
+    // --- Navigation ---
+    const nextStep = () => setCurrentStep(prev => prev + 1);
+    const prevStep = () => setCurrentStep(prev => prev - 1);
+    const startWizard = () => setCurrentPage('wizard');
+    const handleStartOver = () => {
+        setCurrentPage('wizard');
+        setCurrentStep(1);
+        setFile(null);
+        setPastedText('');
+        setUrl('');
+        setExtractedText('');
+        setAnalysisResult({ summary: '', scopes: [], programs: [], focusAreas: [], requiredSections: [] });
+        setSelectedScopes([]);
+        setSelectedPrograms([]);
+        setSelectedFocusAreas([]);
+        setConcepts([]);
+        setSelectedConcept(null);
+        setOrgDetails({ name: '', mission: '', pastExperience: '', maxBudget: '', timeFrame: '' });
+        setSectionsToGenerate({});
+        setGeneratedSections({});
+        setFinalProposal('');
+        setFinalReview('');
+        setRefinementRequest('');
+        setError('');
+        setGuidanceAcknowledged(false);
+        setReviewAcknowledged(false);
+    };
+
+
+    // --- File Handling ---
+    const onDrop = useCallback(acceptedFiles => {
+        const selectedFile = acceptedFiles[0];
+        if (selectedFile && (selectedFile.type === 'application/pdf' || selectedFile.type === 'text/plain')) {
+            setFile(selectedFile);
+            setError('');
+            extractTextFromFile(selectedFile);
+        } else {
+            setError('Please upload a valid PDF or TXT file.');
+        }
+    }, [pdfjsLoaded]);
+
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, multiple: false });
+
+    const extractTextFromFile = async (fileToProcess) => {
+        const reader = new FileReader();
+        reader.onload = async (event) => {
+            try {
+                if (fileToProcess.type === 'application/pdf') {
+                    if (!pdfjsLoaded || !window.pdfjsLib) { setError("PDF library not ready."); return; }
+                    const pdf = await window.pdfjsLib.getDocument({ data: event.target.result }).promise;
+                    let fullText = '';
+                    for (let i = 1; i <= pdf.numPages; i++) {
+                        const page = await pdf.getPage(i);
+                        const textContent = await page.getTextContent();
+                        fullText += textContent.items.map(item => item.str).join(' ') + '\n';
+                    }
+                    setExtractedText(fullText);
+                } else {
+                    setExtractedText(event.target.result);
+                }
+            } catch (e) { setError(`Error reading file: ${e.message}`); }
+        };
+        reader.onerror = () => setError('Failed to read file.');
+        if (fileToProcess.type === 'application/pdf') reader.readAsArrayBuffer(fileToProcess);
+        else reader.readAsText(fileToProcess);
+    };
+    
+    // --- AI Generation ---
+    const runAIPromise = async (prompt) => {
+        try {
+            let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+            const payload = { contents: chatHistory, generationConfig: { temperature: 0.5, maxOutputTokens: 8192 } };
+            const apiKey = "";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            if (!response.ok) throw new Error(`API request failed with status ${response.status}`);
+            const result = await response.json();
+            
+            if (result.candidates?.[0]?.content?.parts?.[0]?.text) {
+                return result.candidates[0].content.parts[0].text;
+            } 
+            
+            const finishReason = result.candidates?.[0]?.finishReason;
+            if (finishReason === "MAX_TOKENS") {
+                console.error("AI response truncated due to max tokens:", result);
+                throw new Error("The AI's response was too long and was cut off. Please try generating fewer sections at once or simplifying the input.");
+            }
+            
+            if (result.promptFeedback?.blockReason) {
+                console.error("AI prompt blocked:", result.promptFeedback);
+                throw new Error(`AI analysis failed. Reason: ${result.promptFeedback.blockReason}. Please try rephrasing your input text.`);
+            }
+
+            console.error("Invalid AI response structure:", result);
+            throw new Error("Invalid response structure from AI. The model may have returned an empty response.");
+
+        } catch (e) {
+            setError(e.message);
+            return null;
+        }
+    };
+
+    const analyzeText = (textToAnalyze) => {
+        const prompt = `
+            Analyze the following grant funding announcement text. Be thorough. Respond with a valid JSON object containing five keys: "summary", "scopes", "programs", "focusAreas", and "requiredSections".
+            1.  "summary": A concise, bulleted summary of the key requirements, eligibility, and evaluation criteria. Use '\\n' for new lines.
+            2.  "scopes": An array of objects for selectable "Scopes of Service". Each object must have a "name" and a "description". If none are found, return an empty array [].
+            3.  "programs": An array of objects for selectable "Program Areas" or "Activities". Each object must have a "name" and a "description". If none are found, return an empty array [].
+            4.  "focusAreas": An array of objects for selectable "Focus Areas" or "Priorities". Each object must have a "name" and a "description". If none are found, return an empty array [].
+            5.  "requiredSections": An array of strings listing the exact titles of all required proposal sections as outlined in the document (e.g., "Project Abstract", "Statement of Need", "Evaluation Plan"). If not specified, provide a standard list.
+            Your entire response MUST be ONLY the JSON object, with no introductory text, code fences, or explanations.
+        `;
+        setIsLoading(true);
+        setError('');
+        runAIPromise(prompt).then(responseString => {
+            if (responseString) {
+                let parsedResult = null;
+                try {
+                    const jsonMatch = responseString.match(/\{[\s\S]*\}/);
+                    if (jsonMatch) {
+                        let jsonString = jsonMatch[0];
+                        jsonString = jsonString.replace(/,(?=\s*[}\]])/g, ''); // Clean trailing commas
+                        parsedResult = JSON.parse(jsonString);
+                    }
+                } catch (e) {
+                    console.error("JSON parsing failed after cleaning:", e);
+                }
+
+                if (parsedResult && typeof parsedResult === 'object') {
+                    const validatedResult = {
+                        summary: parsedResult.summary || 'No summary provided.',
+                        scopes: Array.isArray(parsedResult.scopes) ? parsedResult.scopes : [],
+                        programs: Array.isArray(parsedResult.programs) ? parsedResult.programs : [],
+                        focusAreas: Array.isArray(parsedResult.focusAreas) ? parsedResult.focusAreas : [],
+                        requiredSections: Array.isArray(parsedResult.requiredSections) && parsedResult.requiredSections.length > 0 ? parsedResult.requiredSections : Object.keys(initialState.sectionsToGenerate),
+                    };
+                    
+                    const dynamicSections = validatedResult.requiredSections.reduce((acc, section) => {
+                        acc[section] = true;
+                        return acc;
+                    }, {});
+                    
+                    setAnalysisResult(validatedResult);
+                    setSectionsToGenerate(dynamicSections);
+                    setSelectedScopes([]);
+                    setSelectedPrograms([]);
+                    setSelectedFocusAreas([]);
+                    nextStep();
+                } else {
+                    console.error("Failed to parse AI analysis: No valid JSON object found in response.", responseString);
+                    setError("AI analysis could not be structured. Proceeding with summary only.");
+                    setAnalysisResult({ ...initialState.analysisResult, summary: responseString });
+                    nextStep();
+                }
+            }
+            setIsLoading(false);
+        });
+    };
+
+    const fetchFromUrlAndAnalyze = async () => {
+        setIsLoading(true);
+        setError('');
+        try {
+            const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`);
+            if (!response.ok) throw new Error('Failed to fetch content from the URL.');
+            const html = await response.text();
+            const doc = new DOMParser().parseFromString(html, 'text/html');
+            const textContent = doc.body.textContent || "";
+            if (!textContent.trim()) {
+                throw new Error("Could not extract meaningful text from the URL.");
+            }
+            setExtractedText(textContent);
+            analyzeText(textContent);
+        } catch (e) {
+            setError(e.message);
+            setIsLoading(false);
+        }
+    };
+
+    const handleAnalyze = () => {
+        if (url) {
+            fetchFromUrlAndAnalyze();
+        } else {
+            analyzeText(extractedText || pastedText);
+        }
+    };
+
+    const handleSuggestConcepts = () => {
+        const prompt = `
+            Based on the following funding announcement analysis and user selections, suggest 3 distinct project concepts.
+            Your response MUST be a valid JSON array of objects, where each object has a "name" and a "description".
+            
+            ANALYSIS:
+            ${analysisResult.summary}
+
+            USER SELECTIONS:
+            - Selected Scopes of Service: ${selectedScopes.join(', ') || 'Not specified'}
+            - Selected Programs: ${selectedPrograms.join(', ') || 'Not specified'}
+            - Selected Focus Areas: ${selectedFocusAreas.join(', ') || 'Not specified'}
+
+            TASK: Return a JSON array of 3 project concepts. Each concept should have a "name" (title) and a "description" (2-3 sentences).
+        `;
+        setIsLoading(true);
+        runAIPromise(prompt).then(responseString => {
+            if (responseString) {
+                let parsedResult = [];
+                try {
+                    const jsonMatch = responseString.match(/\[[\s\S]*\]/);
+                    if (jsonMatch) {
+                        let jsonString = jsonMatch[0];
+                        jsonString = jsonString.replace(/,(?=\s*[}\]])/g, '');
+                        parsedResult = JSON.parse(jsonString);
+                    }
+                } catch (e) {
+                    setError("AI returned invalid concept format.");
+                }
+                setConcepts(parsedResult);
+                if (parsedResult.length > 0) {
+                    setSelectedConcept(parsedResult[0]);
+                }
+                nextStep();
+            }
+            setIsLoading(false);
+        });
+    };
+
+    const handleGenerateSections = async () => {
+        setCurrentStep(6);
+        setIsLoading(true);
+        
+        let tempGeneratedSections = {};
+        const fullProposalText = [];
+
+        const basePrompt = `
+            You are an expert grant writer. Ensure your response is well-written, professional, and free of typos. Use the following information to generate the requested proposal section.
+            
+            FUNDER REQUIREMENTS:
+            ${analysisResult.summary}
+
+            USER SELECTIONS:
+            - Selected Scopes of Service: ${selectedScopes.join(', ') || 'Not specified'}
+            - Selected Programs: ${selectedPrograms.join(', ') || 'Not specified'}
+            - Selected Focus Areas: ${selectedFocusAreas.join(', ') || 'Not specified'}
+            - Selected Project Concept: ${selectedConcept?.name || 'Not specified'}
+
+            ORGANIZATION & PROJECT DETAILS:
+            - Organization Name: ${orgDetails.name}
+            - Mission: ${orgDetails.mission}
+            - Past Experience: ${orgDetails.pastExperience}
+            - Maximum Budget: $${orgDetails.maxBudget || 'Not specified'}
+            - Time Frame: ${orgDetails.timeFrame || 'Not specified'} months
+        `;
+        
+        const sectionsToRun = Object.entries(sectionsToGenerate).filter(([, value]) => value).map(([key]) => key);
+
+        for (const key of sectionsToRun) {
+            let specificTask = `Write the complete grant proposal section titled "${key}". Ensure the content is detailed, persuasive, and directly addresses the requirements for this section as outlined in the funding announcement analysis.`;
+
+            if (key.toLowerCase().includes('budget')) {
+                specificTask = `
+                    For the section titled "${key}", generate a detailed line-item budget and a comprehensive budget narrative.
+                    **DO NOT USE A MARKDOWN TABLE.**
+                    Format the output using headings for each category (e.g., ### Personnel) and bullet points for each line item, followed immediately by its narrative justification. The total budget should be realistic for a ${orgDetails.timeFrame || '12'}-month project and should not exceed $${orgDetails.maxBudget || '100000'}.
+                    
+                    Example Format:
+                    ### Personnel
+                    * **Project Director (0.5 FTE): $30,000**
+                        * *Justification:* Funds are requested for a half-time Project Director...
+                `;
+            } else if (key.toLowerCase().includes('outcome') || key.toLowerCase().includes('evaluation')) {
+                 specificTask = `
+                    For the section titled "${key}", generate a list of measurable outcomes.
+                    **DO NOT USE A MARKDOWN TABLE.**
+                    Format the output using headings for each outcome area and bullet points for the details.
+                    
+                    Example Format:
+                    ### Outcome Area: Increased Financial Literacy
+                    * **Specific Outcome:** Participants will improve their financial management skills.
+                    * **Key Indicators:** 80% of participants will create a personal budget.
+                    * **Data Collection Method(s):** Pre- and post-program surveys; review of participant-created budgets.
+                    * **Frequency:** At program entry and exit.
+
+                    Follow this with a brief narrative explaining how this data will be used for Continuous Quality Improvement (CQI).
+                `;
+            }
+
+            const sectionPrompt = `${basePrompt}\n\nTASK: ${specificTask}`;
+            const generatedText = await runAIPromise(sectionPrompt);
+            const textToUse = `## ${key}\n\n` + (generatedText || `Could not generate the '${key}' section.`);
+            
+            tempGeneratedSections[key] = textToUse;
+            setGeneratedSections(prev => ({ ...prev, [key]: textToUse }));
+        }
+        
+        const assembledProposal = sectionsToRun.map(key => tempGeneratedSections[key]).join('\n\n\n');
+        setFinalProposal(assembledProposal);
+        
+        // Now, run the final review
+        const reviewPrompt = `
+            Act as a meticulous grant reviewer. I have generated a grant proposal based on a funding announcement.
+            First, here is the summary of the funder's requirements:
+            ---
+            ${analysisResult.summary}
+            ---
+            Now, here is the full generated proposal:
+            ---
+            ${assembledProposal}
+            ---
+            Your task is to provide a final review. Ensure your writing is professional, clear, and free of typos. Identify the proposal's strengths and, most importantly, provide a bulleted list of specific, actionable suggestions for any final refinements that could boost the score. Check for alignment with requirements, clarity, persuasiveness, and any potential disqualifiers.
+        `;
+        const reviewText = await runAIPromise(reviewPrompt);
+        setFinalReview(reviewText || "Could not generate a final review.");
+
+        setIsLoading(false);
+        nextStep(); // Move to the new Final Review step
+    };
+
+    const handleRefinement = async () => {
+        setIsLoading(true);
+        const refinementPrompt = `
+            You are an expert grant writer. A draft proposal has been generated. Your task is to revise it based on the AI's own review and additional user instructions.
+            
+            **Original Funder Requirements Summary:**
+            ---
+            ${analysisResult.summary}
+            ---
+            **First Draft of the Proposal:**
+            ---
+            ${finalProposal}
+            ---
+            **AI's Review and Suggestions:**
+            ---
+            ${finalReview}
+            ---
+            **User's Additional Refinement Requests:**
+            ---
+            ${refinementRequest}
+            ---
+            **TASK:**
+            Rewrite and return the **entire, complete, and improved** proposal, incorporating the suggestions from the AI review and the user's requests. Ensure the final output is a single, cohesive document that is polished and ready for submission.
+        `;
+        
+        const refinedProposal = await runAIPromise(refinementPrompt);
+        if (refinedProposal) {
+            setFinalProposal(refinedProposal);
+            setRefinementRequest('');
+        }
+        setIsLoading(false);
+        nextStep(); // Move to the final download step
+    };
+
+    const handleSelectionChange = (category, itemName) => {
+        const currentSelection = state[category];
+        const newSelection = currentSelection.includes(itemName)
+            ? currentSelection.filter(item => item !== itemName)
+            : [...currentSelection, itemName];
+        setState(s => ({ ...s, [category]: newSelection }));
+    };
+    
+    // --- Export Functions ---
+    const getSafeTitle = () => {
+        const titleMatch = finalProposal.match(/^## (.*$)/m);
+        if (titleMatch && titleMatch[1]) {
+            return titleMatch[1].replace(/[^a-z0-9\s]/gi, '').replace(/\s+/g, '_').toLowerCase();
+        }
+        return 'grant_proposal';
+    }
+
+    const downloadAsMarkdown = () => {
+        if (!finalProposal) { setError("No proposal content to download."); return; }
+        const blob = new Blob([finalProposal], { type: 'text/markdown;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${getSafeTitle()}.md`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    };
+
+    const downloadAsPdf = () => {
+        if (!finalProposal || !exportLibsLoaded) {
+            setError("Required libraries not loaded or no content available.");
+            return;
+        }
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF('p', 'pt', 'a4');
+        const source = document.getElementById('proposal-content');
+        
+        pdf.html(source, {
+            callback: function (doc) {
+                doc.save(`${getSafeTitle()}.pdf`);
+            },
+            x: 40,
+            y: 40,
+            width: 522,
+            windowWidth: 1000
+        });
+    };
+
+    const copyAsRichText = () => {
+        if (!finalProposal) {
+            setError("No content to copy.");
+            return;
+        }
+    
+        const html = markdownToHtml(finalProposal);
+    
+        const container = document.createElement('div');
+        container.innerHTML = html;
+        container.style.position = 'fixed';
+        container.style.pointerEvents = 'none';
+        container.style.opacity = 0;
+        document.body.appendChild(container);
+    
+        const range = document.createRange();
+        range.selectNode(container);
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+    
+        try {
+            const successful = document.execCommand('copy');
+            if (successful) {
+                setCopyStatus('Copied!');
+                setTimeout(() => setCopyStatus('Copy for Word/Docs'), 2000);
+            } else {
+                throw new Error('Copy command was not successful.');
+            }
+        } catch (err) {
+            console.error('Fallback copy failed:', err);
+            setError("Could not copy to clipboard. Your browser might not support this feature.");
+        }
+    
+        selection.removeAllRanges();
+        document.body.removeChild(container);
+    };
+
+    const markdownToHtml = (text) => {
+        if (!text) return '';
+        return text
+            .replace(/^## (.*$)/gim, '<h2 style="font-size: 1.5em; font-weight: bold; margin-top: 1.2em; margin-bottom: 0.6em;">$1</h2>')
+            .replace(/^### (.*$)/gim, '<h3 style="font-size: 1.25em; font-weight: bold; margin-top: 1em; margin-bottom: 0.5em;">$1</h3>')
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\*(.*?)\*/g, '<em>$1</em>')
+            .replace(/^\* (.*$)/gim, '<p style="margin-left: 1.5em; text-indent: -1.5em;">&bull;&nbsp;&nbsp;&nbsp;$1</p>')
+            .replace(/\n/g, '<br />');
+    };
+
+    // --- Render Logic ---
+    if (currentPage === 'landing') {
+        return <LandingPage onStart={startWizard} />;
+    }
+
+    const steps = [
+        { id: 1, title: 'Upload Document', icon: <UploadCloud /> },
+        { id: 2, title: 'AI Analysis', icon: <BrainCircuit /> },
+        { id: 3, title: 'Project Concepts', icon: <Sparkles /> },
+        { id: 4, title: 'Organization Details', icon: <Building /> },
+        { id: 5, title: 'Select Sections', icon: <ClipboardCheck /> },
+        { id: 6, title: 'Generate Proposal', icon: <FileSignature /> },
+        { id: 7, title: 'Final AI Review', icon: <Check />},
+        { id: 8, title: 'Download', icon: <Eye /> },
+    ];
+    
+    const renderStep = () => {
+        switch (currentStep) {
+            case 1: return (
+                <div>
+                    <div {...getRootProps()} className={`p-10 border-2 border-dashed rounded-xl text-center cursor-pointer transition-colors duration-200 ${isDragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-blue-400'}`}>
+                        <input {...getInputProps()} />
+                        <UploadCloud size={48} className="mx-auto text-gray-400 mb-4" />
+                        <p>Drag & drop RFP/NOFO file here, or click to select</p>
+                        <p className="text-sm text-gray-500 mt-1">Supports: PDF, TXT</p>
+                    </div>
+                    {file && <p className="mt-4 text-center font-medium">{file.name}</p>}
+                    <textarea value={pastedText} onChange={e => setState(s => ({ ...s, pastedText: e.target.value }))} placeholder="Or paste text here..." className="w-full h-32 p-3 mt-4 border rounded-lg" />
+                    <div className="relative my-4">
+                        <div className="absolute inset-0 flex items-center" aria-hidden="true"><div className="w-full border-t border-gray-300" /></div>
+                        <div className="relative flex justify-center"><span className="bg-white px-2 text-sm text-gray-500">OR</span></div>
+                    </div>
+                    <input type="url" value={url} onChange={e => setState(s => ({ ...s, url: e.target.value }))} placeholder="Enter URL of the grant opportunity" className="w-full p-3 border rounded-lg" />
+                    <button onClick={handleAnalyze} disabled={(!file && !pastedText && !url) || isLoading} className="w-full mt-4 bg-blue-600 text-white font-bold py-3 rounded-lg disabled:opacity-50 flex items-center justify-center gap-2">
+                        {isLoading ? <><Loader className="animate-spin" /> Analyzing...</> : <>Analyze & Proceed <ArrowRight /></>}
+                    </button>
+                </div>
+            );
+            case 2: return (
+                <div>
+                    <div className="p-4 bg-yellow-50 border-l-4 border-yellow-400 text-yellow-800 rounded-r-lg mb-6">
+                        <div className="flex">
+                            <div className="flex-shrink-0"><AlertTriangle className="h-5 w-5 text-yellow-500" /></div>
+                            <div className="ml-3">
+                                <h3 className="text-sm font-medium">Strategic Guidance</h3>
+                                <div className="mt-2 text-sm">
+                                    <p>For a stronger proposal, focus on the 1-2 options in each category that best align with your project's core strengths and goals. Selecting too many can make your proposal seem unfocused.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 className="text-lg font-semibold mb-2">Analysis Summary</h3>
+                    <div className="p-4 bg-gray-100 rounded-lg max-h-48 overflow-y-auto prose max-w-none prose-sm"
+                        dangerouslySetInnerHTML={{ __html: markdownToHtml(analysisResult.summary) }}
+                    />
+
+                    {analysisResult.scopes && analysisResult.scopes.length > 0 && (
+                        <div className="mt-4">
+                            <h3 className="text-lg font-semibold mb-2">Select Scope(s) of Service</h3>
+                            <div className="space-y-2">
+                                {analysisResult.scopes.map(scope => (
+                                    <label key={scope.name} className="flex flex-col items-start p-3 rounded-lg border has-[:checked]:bg-blue-50 has-[:checked]:border-blue-500 cursor-pointer">
+                                        <div className="flex items-center w-full">
+                                            <input type="checkbox" name="scope" value={scope.name} checked={selectedScopes.includes(scope.name)} onChange={() => handleSelectionChange('selectedScopes', scope.name)} className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
+                                            <span className="ml-3 font-medium">{scope.name}</span>
+                                        </div>
+                                        {scope.description && <p className="ml-7 mt-1 text-sm text-gray-600">{scope.description}</p>}
+                                    </label>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                    
+                    {analysisResult.programs && analysisResult.programs.length > 0 && (
+                        <div className="mt-4">
+                            <h3 className="text-lg font-semibold mb-2">Select Program Area(s)</h3>
+                            <div className="space-y-2">
+                                {analysisResult.programs.map(program => (
+                                    <label key={program.name} className="flex flex-col items-start p-3 rounded-lg border has-[:checked]:bg-blue-50 has-[:checked]:border-blue-500 cursor-pointer">
+                                        <div className="flex items-center w-full">
+                                            <input type="checkbox" name="program" value={program.name} checked={selectedPrograms.includes(program.name)} onChange={() => handleSelectionChange('selectedPrograms', program.name)} className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
+                                            <span className="ml-3 font-medium">{program.name}</span>
+                                        </div>
+                                        {program.description && <p className="ml-7 mt-1 text-sm text-gray-600">{program.description}</p>}
+                                    </label>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {analysisResult.focusAreas && analysisResult.focusAreas.length > 0 && (
+                        <div className="mt-4">
+                            <h3 className="text-lg font-semibold mb-2">Select Focus Area(s)</h3>
+                            <div className="space-y-2">
+                                {analysisResult.focusAreas.map(area => (
+                                     <label key={area.name} className="flex flex-col items-start p-3 rounded-lg border has-[:checked]:bg-blue-50 has-[:checked]:border-blue-500 cursor-pointer">
+                                        <div className="flex items-center w-full">
+                                            <input type="checkbox" name="focusArea" value={area.name} checked={selectedFocusAreas.includes(area.name)} onChange={() => handleSelectionChange('selectedFocusAreas', area.name)} className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
+                                            <span className="ml-3 font-medium">{area.name}</span>
+                                        </div>
+                                        {area.description && <p className="ml-7 mt-1 text-sm text-gray-600">{area.description}</p>}
+                                    </label>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                    
+                    <div className="mt-6">
+                        <label className="flex items-center space-x-3">
+                            <input type="checkbox" checked={guidanceAcknowledged} onChange={() => setGuidanceAcknowledged(!guidanceAcknowledged)} className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
+                            <span className="text-sm text-gray-600">I understand that selecting the most relevant options is best.</span>
+                        </label>
+                    </div>
+
+                    <button onClick={handleSuggestConcepts} disabled={isLoading || !guidanceAcknowledged} className="w-full mt-4 bg-blue-600 text-white font-bold py-3 rounded-lg flex items-center justify-center gap-2 disabled:opacity-50">
+                         {isLoading ? <><Loader className="animate-spin" /> Working...</> : <>Suggest Concepts & Proceed <ArrowRight /></>}
+                    </button>
+                </div>
+            );
+            case 3: return (
+                <div>
+                    <h3 className="text-lg font-semibold mb-2">Select a Project Concept</h3>
+                    <div className="space-y-2">
+                        {concepts.map(concept => (
+                            <label key={concept.name} className="flex flex-col items-start p-3 rounded-lg border has-[:checked]:bg-blue-50 has-[:checked]:border-blue-500 cursor-pointer">
+                                <div className="flex items-center w-full">
+                                    <input type="radio" name="concept" value={concept.name} checked={selectedConcept?.name === concept.name} onChange={() => setState(s => ({...s, selectedConcept: concept}))} className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300" />
+                                    <span className="ml-3 font-medium">{concept.name}</span>
+                                </div>
+                                {concept.description && <p className="ml-7 mt-1 text-sm text-gray-600">{concept.description}</p>}
+                            </label>
+                        ))}
+                    </div>
+                    <button onClick={nextStep} disabled={!selectedConcept} className="w-full mt-4 bg-blue-600 text-white font-bold py-3 rounded-lg flex items-center justify-center gap-2 disabled:opacity-50">Proceed <ArrowRight /></button>
+                </div>
+            );
+            case 4: return (
+                <div className="space-y-4">
+                    <input type="text" placeholder="Organization Name" value={orgDetails.name} onChange={e => setState(s => ({...s, orgDetails: {...s.orgDetails, name: e.target.value}}))} className="w-full p-3 border rounded-lg" />
+                    <textarea placeholder="Organization Mission" value={orgDetails.mission} onChange={e => setState(s => ({...s, orgDetails: {...s.orgDetails, mission: e.target.value}}))} className="w-full h-24 p-3 border rounded-lg" />
+                    <textarea placeholder="Summary of Past Experience" value={orgDetails.pastExperience} onChange={e => setState(s => ({...s, orgDetails: {...s.orgDetails, pastExperience: e.target.value}}))} className="w-full h-32 p-3 border rounded-lg" />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <input type="number" placeholder="Maximum Budget ($)" value={orgDetails.maxBudget} onChange={e => setState(s => ({...s, orgDetails: {...s.orgDetails, maxBudget: e.target.value}}))} className="w-full p-3 border rounded-lg" />
+                        <input type="number" placeholder="Time Frame (Months)" value={orgDetails.timeFrame} onChange={e => setState(s => ({...s, orgDetails: {...s.orgDetails, timeFrame: e.target.value}}))} className="w-full p-3 border rounded-lg" />
+                    </div>
+                    <button onClick={nextStep} className="w-full mt-4 bg-blue-600 text-white font-bold py-3 rounded-lg flex items-center justify-center gap-2">Save & Proceed <ArrowRight /></button>
+                </div>
+            );
+            case 5: return (
+                <div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {analysisResult.requiredSections.map(key => (
+                            <label key={key} className="flex items-center space-x-3 bg-gray-50 p-4 rounded-lg border has-[:checked]:bg-blue-50 has-[:checked]:border-blue-500 transition">
+                                <input type="checkbox" checked={sectionsToGenerate[key] || false} onChange={() => setState(s => ({...s, sectionsToGenerate: {...s.sectionsToGenerate, [key]: !s.sectionsToGenerate[key]}}))} className="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+                                <span className="font-medium text-gray-700 capitalize">{key.replace(/_/g, ' ')}</span>
+                            </label>
+                        ))}
+                    </div>
+                    <button onClick={handleGenerateSections} disabled={isLoading} className="w-full mt-6 bg-blue-600 text-white font-bold py-3 rounded-lg flex items-center justify-center gap-2 disabled:opacity-50">
+                        {isLoading ? <><Loader className="animate-spin" /> Generating...</> : <>Generate Selected Sections <ArrowRight /></>}
+                    </button>
+                </div>
+            );
+            case 6: return (
+                <div className="space-y-4">
+                    <div className="text-center p-4 text-gray-600">
+                        <Loader className="animate-spin inline-block mr-2" />
+                        Generating proposal sections... Please wait.
+                    </div>
+                    {Object.keys(state.sectionsToGenerate).filter(k => state.sectionsToGenerate[k]).map(key => (
+                        <div key={key} className="bg-gray-50 p-4 rounded-lg border">
+                            <div className="flex justify-between items-center">
+                                <h4 className="font-semibold capitalize">{key.replace(/_/g, ' ')}</h4>
+                                {generatedSections[key] ? 
+                                    (generatedSections[key].includes("## ERROR") ? <X className="text-red-500" /> : <CheckCircle className="text-green-500" />) 
+                                    : <Loader className="animate-spin text-blue-500" />}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            );
+            case 7: return (
+                <div>
+                    <h3 className="text-lg font-semibold mb-2">Final Review & Suggestions</h3>
+                    <div className="p-4 bg-gray-100 rounded-lg max-h-64 overflow-y-auto prose max-w-none prose-sm">
+                        <Typewriter text={finalReview} />
+                    </div>
+                    <div className="mt-4">
+                        <textarea value={refinementRequest} onChange={e => setState(s => ({...s, refinementRequest: e.target.value}))} maxLength="1000" placeholder="Enter your refinement requests here (e.g., 'Make the introduction more compelling by adding a statistic about...')" className="w-full h-24 p-3 border rounded-lg" />
+                        <p className="text-right text-xs text-gray-500">{refinementRequest.length}/1000</p>
+                    </div>
+                    <div className="mt-4">
+                        <label className="flex items-center space-x-3">
+                            <input type="checkbox" checked={reviewAcknowledged} onChange={() => setReviewAcknowledged(!reviewAcknowledged)} className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
+                            <span className="text-sm text-gray-600">I have reviewed the AI's suggestions.</span>
+                        </label>
+                    </div>
+                    <div className="flex gap-4 mt-4">
+                        <button onClick={handleRefinement} disabled={isLoading || !reviewAcknowledged} className="w-full bg-blue-600 text-white font-bold py-3 rounded-lg flex items-center justify-center gap-2 disabled:opacity-50">
+                             {isLoading ? <><Loader className="animate-spin" /> Refining...</> : <>Apply Refinements & Regenerate <ArrowRight /></>}
+                        </button>
+                        <button onClick={nextStep} disabled={!reviewAcknowledged} className="w-full bg-gray-500 text-white font-bold py-3 rounded-lg flex items-center justify-center gap-2 disabled:opacity-50">
+                            Skip & Proceed <ArrowRight />
+                        </button>
+                    </div>
+                </div>
+            );
+            case 8: return (
+                 <div>
+                    <div id="proposal-content-wrapper" className="p-6 bg-gray-100 rounded-lg max-h-[50vh] overflow-y-auto prose max-w-none" >
+                        <div id="proposal-content" dangerouslySetInnerHTML={{ __html: markdownToHtml(finalProposal) }} />
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                        <button onClick={downloadAsPdf} disabled={!exportLibsLoaded} className="flex items-center justify-center gap-2 p-3 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition disabled:opacity-50">
+                            <FileDown size={18} /> Download as PDF
+                        </button>
+                         <button onClick={copyAsRichText} className="flex items-center justify-center gap-2 p-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition">
+                            <Copy size={18} /> {copyStatus}
+                        </button>
+                        <button onClick={downloadAsMarkdown} className="flex items-center justify-center gap-2 p-3 bg-gray-600 text-white font-semibold rounded-lg hover:bg-gray-700 transition">
+                            <Download size={18} /> Download as Text
+                        </button>
+                    </div>
+                </div>
+            );
+            default: return null;
+        }
+    };
+
+    return (
+        <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
+            <div className="w-full max-w-4xl bg-white rounded-2xl shadow-xl border p-8 relative">
+                {currentPage === 'wizard' && (
+                    <button onClick={handleStartOver} className="absolute top-4 right-4 text-gray-400 hover:text-blue-600 transition-colors flex items-center gap-1 text-sm font-medium">
+                        <RefreshCw size={14} />
+                        Start Over
+                    </button>
+                )}
+                <div className="flex items-center justify-center mb-8">
+                    {steps.map((step, index) => (
+                        <React.Fragment key={step.id}>
+                            <div className="flex flex-col items-center">
+                                <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 ${currentStep >= step.id ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-500'}`}>
+                                    {currentStep > step.id ? <CheckCircle /> : step.icon}
+                                </div>
+                                <p className={`mt-2 text-xs text-center font-semibold ${currentStep >= step.id ? 'text-blue-600' : 'text-gray-500'}`}>{step.title}</p>
+                            </div>
+                            {index < steps.length - 1 && <div className={`flex-auto h-1 transition-colors duration-300 mx-2 ${currentStep > step.id ? 'bg-blue-600' : 'bg-gray-200'}`}></div>}
+                        </React.Fragment>
+                    ))}
+                </div>
+                <h2 className="text-2xl font-bold text-center mb-2">{steps.find(s => s.id === currentStep).title}</h2>
+                <p className="text-gray-500 text-center mb-8">Step {currentStep} of {steps.length}</p>
+                {error && <p className="text-red-600 bg-red-100 p-3 rounded-lg mb-4 text-center">{error}</p>}
+                {renderStep()}
+            </div>
+        </div>
+    );
+}
