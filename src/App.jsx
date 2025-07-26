@@ -2,8 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { Loader, UploadCloud, FileText, X, Download, ChevronsRight, Award, ClipboardCheck, DollarSign, Users, Clock, BarChart2, Briefcase, Target, CheckCircle, ArrowRight, BrainCircuit, Building, FileSignature, Eye, Sparkles, Copy, FileDown, RefreshCw, AlertTriangle, Check } from 'lucide-react';
 
-// --- Helper Components ---
-
+// --- Helper Component ---
 const Typewriter = ({ text, onComplete }) => {
     const [displayText, setDisplayText] = useState('');
     useEffect(() => {
@@ -35,77 +34,6 @@ const Typewriter = ({ text, onComplete }) => {
     return <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: markdownToHtml(displayText) }} />;
 };
 
-const LandingPage = ({ onStart }) => {
-    const features = [
-        { icon: <BrainCircuit />, title: "AI-Powered Analysis", description: "Deeply analyzes your funding documents to extract key requirements and priorities." },
-        { icon: <Sparkles />, title: "Strategic Suggestions", description: "Recommends project concepts tailored to funder priorities and your experience." },
-        { icon: <FileSignature />, title: "Section-by-Section Generation", description: "Generate only the sections you need, with real-time progress visualization." },
-        { icon: <Target />, title: "Optimized for Scoring", description: "Crafts persuasive, highly-readable content designed to maximize your evaluation score." },
-    ];
-    return (
-        <div className="bg-white text-gray-800">
-            <header className="container mx-auto px-6 py-4 flex justify-between items-center">
-                <div>
-                    <h1 className="text-2xl font-bold text-blue-600">Easy Grant Writer</h1>
-                    <p className="text-sm text-gray-500 -mt-1">Your AI Partner in Grant Writing</p>
-                </div>
-                <button onClick={onStart} className="bg-blue-600 text-white font-semibold px-6 py-2 rounded-lg hover:bg-blue-700 transition">Get Started</button>
-            </header>
-            <main>
-                <section className="text-center py-20 px-6 bg-gray-50">
-                    <h2 className="text-5xl font-extrabold mb-4">The Easy Way to Write Winning Grant Proposals.</h2>
-                    <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">From RFP to ready-to-submit, faster. Leverage AI to analyze funding opportunities, develop strategic concepts, and write compelling proposals that get noticed.</p>
-                    <button onClick={onStart} className="bg-blue-600 text-white font-bold text-lg px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300">
-                        Start Your Proposal Now <ArrowRight className="inline ml-2" />
-                    </button>
-                </section>
-                <section id="features" className="py-20 px-6">
-                    <div className="container mx-auto">
-                        <h3 className="text-4xl font-bold text-center mb-12">Features</h3>
-                        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-                            {features.map((feature, i) => (
-                                <div key={i} className="bg-gray-50 p-8 rounded-2xl border border-gray-200 text-center">
-                                    <div className="bg-blue-100 text-blue-600 p-4 rounded-full inline-block mb-4">{React.cloneElement(feature.icon, { size: 32 })}</div>
-                                    <h4 className="text-xl font-semibold mb-2">{feature.title}</h4>
-                                    <p className="text-gray-600">{feature.description}</p>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </section>
-                <section id="how-it-works" className="py-20 px-6 bg-gray-50">
-                    <div className="container mx-auto">
-                        <h3 className="text-4xl font-bold text-center mb-12">How It Works</h3>
-                        <div className="relative">
-                            <div className="hidden md:block absolute top-1/2 left-0 w-full h-0.5 bg-gray-300 -translate-y-1/2"></div>
-                             <div className="grid md:grid-cols-3 gap-12 text-center relative">
-                                <div className="space-y-4"><div className="bg-white border-2 border-blue-500 text-blue-500 w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold mx-auto">1</div><h4 className="text-xl font-semibold">Upload & Analyze</h4><p className="text-gray-600">Provide the funder's guidelines (PDF, TXT, or pasted text). Our AI breaks it down in seconds.</p></div>
-                                <div className="space-y-4"><div className="bg-white border-2 border-blue-500 text-blue-500 w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold mx-auto">2</div><h4 className="text-xl font-semibold">Develop & Refine</h4><p className="text-gray-600">Get project concept suggestions, input your organization's details, and select the proposal sections you need.</p></div>
-                                <div className="space-y-4"><div className="bg-white border-2 border-blue-500 text-blue-500 w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold mx-auto">3</div><h4 className="text-xl font-semibold">Generate & Download</h4><p className="text-gray-600">Watch as your proposal is written in real-time. Review the final document and download it with one click.</p></div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-                <section id="pricing" className="py-20 px-6">
-                    <div className="container mx-auto max-w-4xl">
-                        <h3 className="text-4xl font-bold text-center mb-12">Pricing</h3>
-                        <div className="bg-white p-10 rounded-2xl shadow-lg border border-gray-200 text-center">
-                            <h4 className="text-3xl font-bold mb-4">Easy Grant Writer Pro</h4>
-                            <p className="text-gray-600 mb-6">Access all features, unlimited proposals, and priority support.</p>
-                            <div className="text-5xl font-extrabold mb-6">$49 <span className="text-xl font-medium text-gray-500">/ month</span></div>
-                            <button onClick={onStart} className="w-full bg-blue-600 text-white font-bold text-lg px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300">Start Your Free 7-Day Trial</button>
-                        </div>
-                    </div>
-                </section>
-            </main>
-            <footer className="container mx-auto px-6 py-10 text-center text-gray-500">
-                <p className="text-sm"><strong>Disclaimer:</strong> Easy Grant Writer is a powerful tool designed to assist in creating high-quality grant proposals. While it aims to produce competitive and compliant documents, its use does not guarantee a grant award. Funding decisions depend on numerous factors, including the merits of the project, the funder's priorities, and the quality of competing applications.</p>
-                <p className="text-xs mt-4">&copy; {new Date().getFullYear()} Easy Grant Writer. All Rights Reserved.</p>
-            </footer>
-        </div>
-    );
-};
-
 // --- Main Application Component ---
 export default function App() {
     const [currentPage, setCurrentPage] = useState('landing');
@@ -134,16 +62,6 @@ export default function App() {
     const [copyStatus, setCopyStatus] = useState('Copy for Word/Docs');
     const [guidanceAcknowledged, setGuidanceAcknowledged] = useState(false);
     const [reviewAcknowledged, setReviewAcknowledged] = useState(false);
-
-    const initialState = {
-        currentStep: 1, file: null, pastedText: '', url: '', extractedText: '',
-        analysisResult: { summary: '', scopes: [], programs: [], focusAreas: [], requiredSections: [] },
-        selectedScopes: [], selectedPrograms: [], selectedFocusAreas: [],
-        concepts: [], selectedConcept: null,
-        orgDetails: { name: '', mission: '', pastExperience: '', maxBudget: '', timeFrame: '' },
-        sectionsToGenerate: {}, generatedSections: {}, finalProposal: '', finalReview: '',
-        refinementRequest: '', error: '',
-    };
 
     useEffect(() => {
         const pdfScriptId = 'pdfjs-script';
@@ -179,7 +97,7 @@ export default function App() {
 
     const startWizard = () => setCurrentPage('wizard');
     const handleStartOver = () => {
-        setCurrentPage('wizard');
+        setCurrentPage('landing');
         setCurrentStep(1);
         setFile(null); setPastedText(''); setUrl(''); setExtractedText('');
         setAnalysisResult({ summary: '', scopes: [], programs: [], focusAreas: [], requiredSections: [] });
@@ -191,6 +109,8 @@ export default function App() {
         setGuidanceAcknowledged(false); setReviewAcknowledged(false);
     };
 
+    const nextStep = () => setCurrentStep(prev => prev + 1);
+    
     const onDrop = useCallback(acceptedFiles => {
         const selectedFile = acceptedFiles[0];
         if (selectedFile && (selectedFile.type === 'application/pdf' || selectedFile.type === 'text/plain')) {
@@ -201,7 +121,7 @@ export default function App() {
         }
     }, [pdfjsLoaded]);
 
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, multiple: false });
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, multiple: false, disabled: !pdfjsLoaded });
 
     const extractTextFromFile = async (fileToProcess) => {
         const reader = new FileReader();
@@ -229,7 +149,12 @@ export default function App() {
     
     const runAIPromise = async (prompt) => {
         try {
-            const apiKey = ""; 
+            const apiKey = (typeof import.meta !== 'undefined' && import.meta.env) ? import.meta.env.VITE_GEMINI_API_KEY : "";
+            if (!apiKey && window.location.hostname !== 'localhost') {
+                 setError("API Key is not configured. Please set it in your Vercel project settings.");
+                 return null;
+            }
+
             let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
             const payload = { contents: chatHistory, generationConfig: { temperature: 0.5, maxOutputTokens: 8192 } };
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
@@ -312,12 +237,12 @@ export default function App() {
                     setSelectedScopes([]);
                     setSelectedPrograms([]);
                     setSelectedFocusAreas([]);
-                    setCurrentStep(2);
+                    nextStep();
                 } else {
                     console.error("Failed to parse AI analysis: No valid JSON object found in response.", responseString);
                     setError("AI analysis could not be structured. Proceeding with summary only.");
                     setAnalysisResult({ ...analysisResult, summary: responseString });
-                    setCurrentStep(2);
+                    nextStep();
                 }
             }
             setIsLoading(false);
@@ -390,7 +315,7 @@ export default function App() {
                 if (parsedResult.length > 0) {
                     setSelectedConcept(parsedResult[0]);
                 }
-                setCurrentStep(3);
+                nextStep();
             }
             setIsLoading(false);
         });
@@ -522,11 +447,26 @@ export default function App() {
     };
 
     const handleSelectionChange = (category, itemName) => {
-        const currentSelection = state[category];
-        const newSelection = currentSelection.includes(itemName)
-            ? currentSelection.filter(item => item !== itemName)
-            : [...currentSelection, itemName];
-        setState(s => ({ ...s, [category]: newSelection }));
+        const setters = {
+            selectedScopes: setSelectedScopes,
+            selectedPrograms: setSelectedPrograms,
+            selectedFocusAreas: setSelectedFocusAreas,
+        };
+        const getter = {
+            selectedScopes: selectedScopes,
+            selectedPrograms: selectedPrograms,
+            selectedFocusAreas: selectedFocusAreas,
+        }
+
+        const setSelection = setters[category];
+        const currentSelection = getter[category];
+        
+        if (setSelection && currentSelection) {
+            const newSelection = currentSelection.includes(itemName)
+                ? currentSelection.filter(item => item !== itemName)
+                : [...currentSelection, itemName];
+            setSelection(newSelection);
+        }
     };
     
     // --- Export Functions ---
@@ -643,12 +583,12 @@ export default function App() {
                         <p className="text-sm text-gray-500 mt-1">Supports: PDF, TXT</p>
                     </div>
                     {file && <p className="mt-4 text-center font-medium">{file.name}</p>}
-                    <textarea value={pastedText} onChange={e => setState(s => ({ ...s, pastedText: e.target.value }))} placeholder="Or paste text here..." className="w-full h-32 p-3 mt-4 border rounded-lg" />
+                    <textarea value={pastedText} onChange={e => setPastedText(e.target.value)} placeholder="Or paste text here..." className="w-full h-32 p-3 mt-4 border rounded-lg" />
                     <div className="relative my-4">
                         <div className="absolute inset-0 flex items-center" aria-hidden="true"><div className="w-full border-t border-gray-300" /></div>
                         <div className="relative flex justify-center"><span className="bg-white px-2 text-sm text-gray-500">OR</span></div>
                     </div>
-                    <input type="url" value={url} onChange={e => setState(s => ({ ...s, url: e.target.value }))} placeholder="Enter URL of the grant opportunity" className="w-full p-3 border rounded-lg" />
+                    <input type="url" value={url} onChange={e => setUrl(e.target.value)} placeholder="Enter URL of the grant opportunity" className="w-full p-3 border rounded-lg" />
                     <button onClick={handleAnalyze} disabled={(!file && !pastedText && !url) || isLoading} className="w-full mt-4 bg-blue-600 text-white font-bold py-3 rounded-lg disabled:opacity-50 flex items-center justify-center gap-2">
                         {isLoading ? <><Loader className="animate-spin" /> Analyzing...</> : <>Analyze & Proceed <ArrowRight /></>}
                     </button>
@@ -743,7 +683,7 @@ export default function App() {
                         {concepts.map(concept => (
                             <label key={concept.name} className="flex flex-col items-start p-3 rounded-lg border has-[:checked]:bg-blue-50 has-[:checked]:border-blue-500 cursor-pointer">
                                 <div className="flex items-center w-full">
-                                    <input type="radio" name="concept" value={concept.name} checked={selectedConcept?.name === concept.name} onChange={() => setState(s => ({...s, selectedConcept: concept}))} className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300" />
+                                    <input type="radio" name="concept" value={concept.name} checked={selectedConcept?.name === concept.name} onChange={() => setSelectedConcept(concept)} className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300" />
                                     <span className="ml-3 font-medium">{concept.name}</span>
                                 </div>
                                 {concept.description && <p className="ml-7 mt-1 text-sm text-gray-600">{concept.description}</p>}
@@ -755,12 +695,12 @@ export default function App() {
             );
             case 4: return (
                 <div className="space-y-4">
-                    <input type="text" placeholder="Organization Name" value={orgDetails.name} onChange={e => setState(s => ({...s, orgDetails: {...s.orgDetails, name: e.target.value}}))} className="w-full p-3 border rounded-lg" />
-                    <textarea placeholder="Organization Mission" value={orgDetails.mission} onChange={e => setState(s => ({...s, orgDetails: {...s.orgDetails, mission: e.target.value}}))} className="w-full h-24 p-3 border rounded-lg" />
-                    <textarea placeholder="Summary of Past Experience" value={orgDetails.pastExperience} onChange={e => setState(s => ({...s, orgDetails: {...s.orgDetails, pastExperience: e.target.value}}))} className="w-full h-32 p-3 border rounded-lg" />
+                    <input type="text" placeholder="Organization Name" value={orgDetails.name} onChange={e => setOrgDetails({...orgDetails, name: e.target.value})} className="w-full p-3 border rounded-lg" />
+                    <textarea placeholder="Organization Mission" value={orgDetails.mission} onChange={e => setOrgDetails({...orgDetails, mission: e.target.value})} className="w-full h-24 p-3 border rounded-lg" />
+                    <textarea placeholder="Summary of Past Experience" value={orgDetails.pastExperience} onChange={e => setOrgDetails({...orgDetails, pastExperience: e.target.value})} className="w-full h-32 p-3 border rounded-lg" />
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <input type="number" placeholder="Maximum Budget ($)" value={orgDetails.maxBudget} onChange={e => setState(s => ({...s, orgDetails: {...s.orgDetails, maxBudget: e.target.value}}))} className="w-full p-3 border rounded-lg" />
-                        <input type="number" placeholder="Time Frame (Months)" value={orgDetails.timeFrame} onChange={e => setState(s => ({...s, orgDetails: {...s.orgDetails, timeFrame: e.target.value}}))} className="w-full p-3 border rounded-lg" />
+                        <input type="number" placeholder="Maximum Budget ($)" value={orgDetails.maxBudget} onChange={e => setOrgDetails({...orgDetails, maxBudget: e.target.value})} className="w-full p-3 border rounded-lg" />
+                        <input type="number" placeholder="Time Frame (Months)" value={orgDetails.timeFrame} onChange={e => setOrgDetails({...orgDetails, timeFrame: e.target.value})} className="w-full p-3 border rounded-lg" />
                     </div>
                     <button onClick={nextStep} className="w-full mt-4 bg-blue-600 text-white font-bold py-3 rounded-lg flex items-center justify-center gap-2">Save & Proceed <ArrowRight /></button>
                 </div>
@@ -770,7 +710,7 @@ export default function App() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {analysisResult.requiredSections.map(key => (
                             <label key={key} className="flex items-center space-x-3 bg-gray-50 p-4 rounded-lg border has-[:checked]:bg-blue-50 has-[:checked]:border-blue-500 transition">
-                                <input type="checkbox" checked={sectionsToGenerate[key] || false} onChange={() => setState(s => ({...s, sectionsToGenerate: {...s.sectionsToGenerate, [key]: !s.sectionsToGenerate[key]}}))} className="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+                                <input type="checkbox" checked={sectionsToGenerate[key] || false} onChange={() => setSectionsToGenerate(prev => ({...prev, [key]: !prev[key]}))} className="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
                                 <span className="font-medium text-gray-700 capitalize">{key.replace(/_/g, ' ')}</span>
                             </label>
                         ))}
@@ -786,7 +726,7 @@ export default function App() {
                         <Loader className="animate-spin inline-block mr-2" />
                         Generating proposal sections... Please wait.
                     </div>
-                    {Object.keys(state.sectionsToGenerate).filter(k => state.sectionsToGenerate[k]).map(key => (
+                    {Object.keys(sectionsToGenerate).filter(k => sectionsToGenerate[k]).map(key => (
                         <div key={key} className="bg-gray-50 p-4 rounded-lg border">
                             <div className="flex justify-between items-center">
                                 <h4 className="font-semibold capitalize">{key.replace(/_/g, ' ')}</h4>
@@ -805,7 +745,7 @@ export default function App() {
                         <Typewriter text={finalReview} />
                     </div>
                     <div className="mt-4">
-                        <textarea value={refinementRequest} onChange={e => setState(s => ({...s, refinementRequest: e.target.value}))} maxLength="1000" placeholder="Enter your refinement requests here (e.g., 'Make the introduction more compelling by adding a statistic about...')" className="w-full h-24 p-3 border rounded-lg" />
+                        <textarea value={refinementRequest} onChange={e => setRefinementRequest(e.target.value)} maxLength="1000" placeholder="Enter your refinement requests here (e.g., 'Make the introduction more compelling by adding a statistic about...')" className="w-full h-24 p-3 border rounded-lg" />
                         <p className="text-right text-xs text-gray-500">{refinementRequest.length}/1000</p>
                     </div>
                     <div className="mt-4">
@@ -847,18 +787,83 @@ export default function App() {
     };
 
     if (currentPage === 'landing') {
-        return <LandingPage onStart={startWizard} />;
+        const features = [
+            { icon: <BrainCircuit />, title: "AI-Powered Analysis", description: "Deeply analyzes your funding documents to extract key requirements and priorities." },
+            { icon: <Sparkles />, title: "Strategic Suggestions", description: "Recommends project concepts tailored to funder priorities and your experience." },
+            { icon: <FileSignature />, title: "Section-by-Section Generation", description: "Generate only the sections you need, with real-time progress visualization." },
+            { icon: <Target />, title: "Optimized for Scoring", description: "Crafts persuasive, highly-readable content designed to maximize your evaluation score." },
+        ];
+        return (
+            <div className="bg-white text-gray-800">
+                <header className="container mx-auto px-6 py-4 flex justify-between items-center">
+                    <div>
+                        <h1 className="text-2xl font-bold text-blue-600">Easy Grant Writer</h1>
+                        <p className="text-sm text-gray-500 -mt-1">Your AI Partner in Grant Writing</p>
+                    </div>
+                    <button onClick={startWizard} className="bg-blue-600 text-white font-semibold px-6 py-2 rounded-lg hover:bg-blue-700 transition">Get Started</button>
+                </header>
+                <main>
+                    <section className="text-center py-20 px-6 bg-gray-50">
+                        <h2 className="text-5xl font-extrabold mb-4">The Easy Way to Write Winning Grant Proposals.</h2>
+                        <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">From RFP to ready-to-submit, faster. Leverage AI to analyze funding opportunities, develop strategic concepts, and write compelling proposals that get noticed.</p>
+                        <button onClick={startWizard} className="bg-blue-600 text-white font-bold text-lg px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300">
+                            Start Your Proposal Now <ArrowRight className="inline ml-2" />
+                        </button>
+                    </section>
+                    <section id="features" className="py-20 px-6">
+                        <div className="container mx-auto">
+                            <h3 className="text-4xl font-bold text-center mb-12">Features</h3>
+                            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                                {features.map((feature, i) => (
+                                    <div key={i} className="bg-gray-50 p-8 rounded-2xl border border-gray-200 text-center">
+                                        <div className="bg-blue-100 text-blue-600 p-4 rounded-full inline-block mb-4">{React.cloneElement(feature.icon, { size: 32 })}</div>
+                                        <h4 className="text-xl font-semibold mb-2">{feature.title}</h4>
+                                        <p className="text-gray-600">{feature.description}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+                    <section id="how-it-works" className="py-20 px-6 bg-gray-50">
+                        <div className="container mx-auto">
+                            <h3 className="text-4xl font-bold text-center mb-12">How It Works</h3>
+                            <div className="relative">
+                                <div className="hidden md:block absolute top-1/2 left-0 w-full h-0.5 bg-gray-300 -translate-y-1/2"></div>
+                                 <div className="grid md:grid-cols-3 gap-12 text-center relative">
+                                    <div className="space-y-4"><div className="bg-white border-2 border-blue-500 text-blue-500 w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold mx-auto">1</div><h4 className="text-xl font-semibold">Upload & Analyze</h4><p className="text-gray-600">Provide the funder's guidelines (PDF, TXT, or pasted text). Our AI breaks it down in seconds.</p></div>
+                                    <div className="space-y-4"><div className="bg-white border-2 border-blue-500 text-blue-500 w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold mx-auto">2</div><h4 className="text-xl font-semibold">Develop & Refine</h4><p className="text-gray-600">Get project concept suggestions, input your organization's details, and select the proposal sections you need.</p></div>
+                                    <div className="space-y-4"><div className="bg-white border-2 border-blue-500 text-blue-500 w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold mx-auto">3</div><h4 className="text-xl font-semibold">Generate & Download</h4><p className="text-gray-600">Watch as your proposal is written in real-time. Review the final document and download it with one click.</p></div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section id="pricing" className="py-20 px-6">
+                        <div className="container mx-auto max-w-4xl">
+                            <h3 className="text-4xl font-bold text-center mb-12">Pricing</h3>
+                            <div className="bg-white p-10 rounded-2xl shadow-lg border border-gray-200 text-center">
+                                <h4 className="text-3xl font-bold mb-4">Easy Grant Writer Pro</h4>
+                                <p className="text-gray-600 mb-6">Access all features, unlimited proposals, and priority support.</p>
+                                <div className="text-5xl font-extrabold mb-6">$49 <span className="text-xl font-medium text-gray-500">/ month</span></div>
+                                <button onClick={startWizard} className="w-full bg-blue-600 text-white font-bold text-lg px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300">Start Your Free 7-Day Trial</button>
+                            </div>
+                        </div>
+                    </section>
+                </main>
+                <footer className="container mx-auto px-6 py-10 text-center text-gray-500">
+                    <p className="text-sm"><strong>Disclaimer:</strong> Easy Grant Writer is a powerful tool designed to assist in creating high-quality grant proposals. While it aims to produce competitive and compliant documents, its use does not guarantee a grant award. Funding decisions depend on numerous factors, including the merits of the project, the funder's priorities, and the quality of competing applications.</p>
+                    <p className="text-xs mt-4">&copy; {new Date().getFullYear()} Easy Grant Writer. All Rights Reserved.</p>
+                </footer>
+            </div>
+        );
     }
 
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
             <div className="w-full max-w-4xl bg-white rounded-2xl shadow-xl border p-8 relative">
-                {currentPage === 'wizard' && (
-                    <button onClick={onStartOver} className="absolute top-4 right-4 text-gray-400 hover:text-blue-600 transition-colors flex items-center gap-1 text-sm font-medium">
-                        <RefreshCw size={14} />
-                        Start Over
-                    </button>
-                )}
+                <button onClick={handleStartOver} className="absolute top-4 right-4 text-gray-400 hover:text-blue-600 transition-colors flex items-center gap-1 text-sm font-medium">
+                    <RefreshCw size={14} />
+                    Start Over
+                </button>
                 <div className="flex items-center justify-center mb-8">
                     {steps.map((step, index) => (
                         <React.Fragment key={step.id}>
