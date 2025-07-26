@@ -133,9 +133,7 @@ const LandingPage = ({ onStart }) => {
     );
 };
 
-// --- Main Application Component ---
-export default function App() {
-    const [currentPage, setCurrentPage] = useState('landing');
+const GrantWizard = ({ onStartOver }) => {
     const [currentStep, setCurrentStep] = useState(1);
     const [file, setFile] = useState(null);
     const [pastedText, setPastedText] = useState('');
@@ -162,6 +160,7 @@ export default function App() {
     const [copyStatus, setCopyStatus] = useState('Copy for Word/Docs');
     const [guidanceAcknowledged, setGuidanceAcknowledged] = useState(false);
     const [reviewAcknowledged, setReviewAcknowledged] = useState(false);
+
 
     // --- Library Loading ---
     useEffect(() => {
@@ -198,32 +197,7 @@ export default function App() {
 
     // --- Navigation ---
     const nextStep = () => setCurrentStep(prev => prev + 1);
-    const startWizard = () => setCurrentPage('wizard');
-    const handleStartOver = () => {
-        setCurrentPage('wizard');
-        setCurrentStep(1);
-        setFile(null);
-        setPastedText('');
-        setUrl('');
-        setExtractedText('');
-        setAnalysisResult({ summary: '', scopes: [], programs: [], focusAreas: [], requiredSections: [] });
-        setSelectedScopes([]);
-        setSelectedPrograms([]);
-        setSelectedFocusAreas([]);
-        setConcepts([]);
-        setSelectedConcept(null);
-        setOrgDetails({ name: '', mission: '', pastExperience: '', maxBudget: '', timeFrame: '' });
-        setSectionsToGenerate({});
-        setGeneratedSections({});
-        setFinalProposal('');
-        setFinalReview('');
-        setRefinementRequest('');
-        setError('');
-        setGuidanceAcknowledged(false);
-        setReviewAcknowledged(false);
-    };
-
-
+    
     // --- File Handling ---
     const onDrop = useCallback(acceptedFiles => {
         const selectedFile = acceptedFiles[0];
@@ -265,11 +239,7 @@ export default function App() {
     // --- AI Generation ---
     const runAIPromise = async (prompt) => {
         try {
-            const apiKey = ""; // Let the environment handle the key
-            if (!apiKey && typeof import.meta === 'undefined') {
-                 console.warn("API Key is not set. This will likely fail on a deployed site.");
-            }
-
+            const apiKey = ""; 
             let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
             const payload = { contents: chatHistory, generationConfig: { temperature: 0.5, maxOutputTokens: 8192 } };
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
@@ -356,7 +326,7 @@ export default function App() {
                 } else {
                     console.error("Failed to parse AI analysis: No valid JSON object found in response.", responseString);
                     setError("AI analysis could not be structured. Proceeding with summary only.");
-                    setAnalysisResult({ ...initialState.analysisResult, summary: responseString });
+                    setAnalysisResult({ ...analysisResult, summary: responseString });
                     nextStep();
                 }
             }
@@ -886,15 +856,11 @@ export default function App() {
         }
     };
 
-    if (currentPage === 'landing') {
-        return <LandingPage onStart={startWizard} />;
-    }
-
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
             <div className="w-full max-w-4xl bg-white rounded-2xl shadow-xl border p-8 relative">
                 {currentPage === 'wizard' && (
-                    <button onClick={handleStartOver} className="absolute top-4 right-4 text-gray-400 hover:text-blue-600 transition-colors flex items-center gap-1 text-sm font-medium">
+                    <button onClick={onStartOver} className="absolute top-4 right-4 text-gray-400 hover:text-blue-600 transition-colors flex items-center gap-1 text-sm font-medium">
                         <RefreshCw size={14} />
                         Start Over
                     </button>
@@ -919,4 +885,23 @@ export default function App() {
             </div>
         </div>
     );
+}
+
+// This is the main component that decides whether to show the landing page or the wizard.
+export default function App() {
+    const [page, setPage] = useState('landing');
+
+    const startWizard = () => {
+        setPage('wizard');
+    };
+
+    const handleStartOver = () => {
+        setPage('landing');
+    };
+
+    if (page === 'landing') {
+        return <LandingPage onStart={startWizard} />;
+    }
+
+    return <GrantWizard onStartOver={handleStartOver} />;
 }
