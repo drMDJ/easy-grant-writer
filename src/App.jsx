@@ -265,15 +265,21 @@ export default function App() {
     // --- AI Generation ---
     const runAIPromise = async (prompt) => {
         try {
+            const apiKey = ""; // Let the environment handle the key
+            if (!apiKey && typeof import.meta === 'undefined') {
+                 console.warn("API Key is not set. This will likely fail on a deployed site.");
+            }
+
             let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
             const payload = { contents: chatHistory, generationConfig: { temperature: 0.5, maxOutputTokens: 8192 } };
-            const apiKey = "";
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+            
             const response = await fetch(apiUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
+
             if (!response.ok) throw new Error(`API request failed with status ${response.status}`);
             const result = await response.json();
             
