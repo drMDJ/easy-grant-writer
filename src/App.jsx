@@ -4,13 +4,11 @@ import { Loader, UploadCloud, FileText, X, Download, ChevronsRight, Award, Clipb
 
 // --- Helper Components ---
 
-// Typing effect component
 const Typewriter = ({ text, onComplete }) => {
     const [displayText, setDisplayText] = useState('');
-
     useEffect(() => {
         let i = 0;
-        setDisplayText(''); // Reset on text change
+        setDisplayText('');
         const typingInterval = setInterval(() => {
             if (i < text.length) {
                 setDisplayText(prev => prev + text.charAt(i));
@@ -19,12 +17,10 @@ const Typewriter = ({ text, onComplete }) => {
                 clearInterval(typingInterval);
                 if (onComplete) onComplete();
             }
-        }, 10); // Faster typing speed
-
+        }, 10);
         return () => clearInterval(typingInterval);
     }, [text, onComplete]);
 
-    // Basic markdown to HTML
     const markdownToHtml = (mdText) => {
         if (!mdText) return '';
         return mdText
@@ -35,12 +31,10 @@ const Typewriter = ({ text, onComplete }) => {
             .replace(/\*(.*?)\*/g, '<em>$1</em>')
             .replace(/^\* (.*$)/gim, '<li class="ml-6 mb-2 list-disc">$1</li>')
             .replace(/\n/g, '<br />');
-    }
-
+    };
     return <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: markdownToHtml(displayText) }} />;
 };
 
-// --- Landing Page Component ---
 const LandingPage = ({ onStart }) => {
     const features = [
         { icon: <BrainCircuit />, title: "AI-Powered Analysis", description: "Deeply analyzes your funding documents to extract key requirements and priorities." },
@@ -48,7 +42,6 @@ const LandingPage = ({ onStart }) => {
         { icon: <FileSignature />, title: "Section-by-Section Generation", description: "Generate only the sections you need, with real-time progress visualization." },
         { icon: <Target />, title: "Optimized for Scoring", description: "Crafts persuasive, highly-readable content designed to maximize your evaluation score." },
     ];
-
     return (
         <div className="bg-white text-gray-800">
             <header className="container mx-auto px-6 py-4 flex justify-between items-center">
@@ -58,7 +51,6 @@ const LandingPage = ({ onStart }) => {
                 </div>
                 <button onClick={onStart} className="bg-blue-600 text-white font-semibold px-6 py-2 rounded-lg hover:bg-blue-700 transition">Get Started</button>
             </header>
-
             <main>
                 <section className="text-center py-20 px-6 bg-gray-50">
                     <h2 className="text-5xl font-extrabold mb-4">The Easy Way to Write Winning Grant Proposals.</h2>
@@ -67,7 +59,6 @@ const LandingPage = ({ onStart }) => {
                         Start Your Proposal Now <ArrowRight className="inline ml-2" />
                     </button>
                 </section>
-
                 <section id="features" className="py-20 px-6">
                     <div className="container mx-auto">
                         <h3 className="text-4xl font-bold text-center mb-12">Features</h3>
@@ -82,33 +73,19 @@ const LandingPage = ({ onStart }) => {
                         </div>
                     </div>
                 </section>
-
                 <section id="how-it-works" className="py-20 px-6 bg-gray-50">
                     <div className="container mx-auto">
                         <h3 className="text-4xl font-bold text-center mb-12">How It Works</h3>
                         <div className="relative">
                             <div className="hidden md:block absolute top-1/2 left-0 w-full h-0.5 bg-gray-300 -translate-y-1/2"></div>
                              <div className="grid md:grid-cols-3 gap-12 text-center relative">
-                                <div className="space-y-4">
-                                    <div className="bg-white border-2 border-blue-500 text-blue-500 w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold mx-auto">1</div>
-                                    <h4 className="text-xl font-semibold">Upload & Analyze</h4>
-                                    <p className="text-gray-600">Provide the funder's guidelines (PDF, TXT, or pasted text). Our AI breaks it down in seconds.</p>
-                                </div>
-                                <div className="space-y-4">
-                                     <div className="bg-white border-2 border-blue-500 text-blue-500 w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold mx-auto">2</div>
-                                    <h4 className="text-xl font-semibold">Develop & Refine</h4>
-                                    <p className="text-gray-600">Get project concept suggestions, input your organization's details, and select the proposal sections you need.</p>
-                                </div>
-                                <div className="space-y-4">
-                                     <div className="bg-white border-2 border-blue-500 text-blue-500 w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold mx-auto">3</div>
-                                    <h4 className="text-xl font-semibold">Generate & Download</h4>
-                                    <p className="text-gray-600">Watch as your proposal is written in real-time. Review the final document and download it with one click.</p>
-                                </div>
+                                <div className="space-y-4"><div className="bg-white border-2 border-blue-500 text-blue-500 w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold mx-auto">1</div><h4 className="text-xl font-semibold">Upload & Analyze</h4><p className="text-gray-600">Provide the funder's guidelines (PDF, TXT, or pasted text). Our AI breaks it down in seconds.</p></div>
+                                <div className="space-y-4"><div className="bg-white border-2 border-blue-500 text-blue-500 w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold mx-auto">2</div><h4 className="text-xl font-semibold">Develop & Refine</h4><p className="text-gray-600">Get project concept suggestions, input your organization's details, and select the proposal sections you need.</p></div>
+                                <div className="space-y-4"><div className="bg-white border-2 border-blue-500 text-blue-500 w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold mx-auto">3</div><h4 className="text-xl font-semibold">Generate & Download</h4><p className="text-gray-600">Watch as your proposal is written in real-time. Review the final document and download it with one click.</p></div>
                             </div>
                         </div>
                     </div>
                 </section>
-
                 <section id="pricing" className="py-20 px-6">
                     <div className="container mx-auto max-w-4xl">
                         <h3 className="text-4xl font-bold text-center mb-12">Pricing</h3>
@@ -116,24 +93,22 @@ const LandingPage = ({ onStart }) => {
                             <h4 className="text-3xl font-bold mb-4">Easy Grant Writer Pro</h4>
                             <p className="text-gray-600 mb-6">Access all features, unlimited proposals, and priority support.</p>
                             <div className="text-5xl font-extrabold mb-6">$49 <span className="text-xl font-medium text-gray-500">/ month</span></div>
-                            <button onClick={onStart} className="w-full bg-blue-600 text-white font-bold text-lg px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300">
-                                Start Your Free 7-Day Trial
-                            </button>
+                            <button onClick={onStart} className="w-full bg-blue-600 text-white font-bold text-lg px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300">Start Your Free 7-Day Trial</button>
                         </div>
                     </div>
                 </section>
             </main>
             <footer className="container mx-auto px-6 py-10 text-center text-gray-500">
-                <p className="text-sm">
-                    <strong>Disclaimer:</strong> Easy Grant Writer is a powerful tool designed to assist in creating high-quality grant proposals. While it aims to produce competitive and compliant documents, its use does not guarantee a grant award. Funding decisions depend on numerous factors, including the merits of the project, the funder's priorities, and the quality of competing applications.
-                </p>
+                <p className="text-sm"><strong>Disclaimer:</strong> Easy Grant Writer is a powerful tool designed to assist in creating high-quality grant proposals. While it aims to produce competitive and compliant documents, its use does not guarantee a grant award. Funding decisions depend on numerous factors, including the merits of the project, the funder's priorities, and the quality of competing applications.</p>
                 <p className="text-xs mt-4">&copy; {new Date().getFullYear()} Easy Grant Writer. All Rights Reserved.</p>
             </footer>
         </div>
     );
 };
 
-const GrantWizard = ({ onStartOver }) => {
+// --- Main Application Component ---
+export default function App() {
+    const [currentPage, setCurrentPage] = useState('landing');
     const [currentStep, setCurrentStep] = useState(1);
     const [file, setFile] = useState(null);
     const [pastedText, setPastedText] = useState('');
@@ -153,7 +128,6 @@ const GrantWizard = ({ onStartOver }) => {
     const [refinementRequest, setRefinementRequest] = useState('');
     const [error, setError] = useState('');
     
-    // Control state
     const [isLoading, setIsLoading] = useState(false);
     const [pdfjsLoaded, setPdfjsLoaded] = useState(false);
     const [exportLibsLoaded, setExportLibsLoaded] = useState(false);
@@ -161,8 +135,16 @@ const GrantWizard = ({ onStartOver }) => {
     const [guidanceAcknowledged, setGuidanceAcknowledged] = useState(false);
     const [reviewAcknowledged, setReviewAcknowledged] = useState(false);
 
+    const initialState = {
+        currentStep: 1, file: null, pastedText: '', url: '', extractedText: '',
+        analysisResult: { summary: '', scopes: [], programs: [], focusAreas: [], requiredSections: [] },
+        selectedScopes: [], selectedPrograms: [], selectedFocusAreas: [],
+        concepts: [], selectedConcept: null,
+        orgDetails: { name: '', mission: '', pastExperience: '', maxBudget: '', timeFrame: '' },
+        sectionsToGenerate: {}, generatedSections: {}, finalProposal: '', finalReview: '',
+        refinementRequest: '', error: '',
+    };
 
-    // --- Library Loading ---
     useEffect(() => {
         const pdfScriptId = 'pdfjs-script';
         if (!document.getElementById(pdfScriptId)) {
@@ -195,15 +177,24 @@ const GrantWizard = ({ onStartOver }) => {
         }
     }, []);
 
-    // --- Navigation ---
-    const nextStep = () => setCurrentStep(prev => prev + 1);
-    
-    // --- File Handling ---
+    const startWizard = () => setCurrentPage('wizard');
+    const handleStartOver = () => {
+        setCurrentPage('wizard');
+        setCurrentStep(1);
+        setFile(null); setPastedText(''); setUrl(''); setExtractedText('');
+        setAnalysisResult({ summary: '', scopes: [], programs: [], focusAreas: [], requiredSections: [] });
+        setSelectedScopes([]); setSelectedPrograms([]); setSelectedFocusAreas([]);
+        setConcepts([]); setSelectedConcept(null);
+        setOrgDetails({ name: '', mission: '', pastExperience: '', maxBudget: '', timeFrame: '' });
+        setSectionsToGenerate({}); setGeneratedSections({}); setFinalProposal('');
+        setFinalReview(''); setRefinementRequest(''); setError('');
+        setGuidanceAcknowledged(false); setReviewAcknowledged(false);
+    };
+
     const onDrop = useCallback(acceptedFiles => {
         const selectedFile = acceptedFiles[0];
         if (selectedFile && (selectedFile.type === 'application/pdf' || selectedFile.type === 'text/plain')) {
-            setFile(selectedFile);
-            setError('');
+            setFile(selectedFile); setError('');
             extractTextFromFile(selectedFile);
         } else {
             setError('Please upload a valid PDF or TXT file.');
@@ -236,7 +227,6 @@ const GrantWizard = ({ onStartOver }) => {
         else reader.readAsText(fileToProcess);
     };
     
-    // --- AI Generation ---
     const runAIPromise = async (prompt) => {
         try {
             const apiKey = ""; 
@@ -284,7 +274,7 @@ const GrantWizard = ({ onStartOver }) => {
             2.  "scopes": An array of objects for selectable "Scopes of Service". Each object must have a "name" and a "description". If none are found, return an empty array [].
             3.  "programs": An array of objects for selectable "Program Areas" or "Activities". Each object must have a "name" and a "description". If none are found, return an empty array [].
             4.  "focusAreas": An array of objects for selectable "Focus Areas" or "Priorities". Each object must have a "name" and a "description". If none are found, return an empty array [].
-            5.  "requiredSections": An array of strings listing the exact titles of all required proposal sections as outlined in the document (e.g., "Project Abstract", "Statement of Need", "Evaluation Plan"). If not specified, provide a standard list.
+            5.  "requiredSections": An array of strings listing the exact titles of all required proposal sections as outlined in the document. If not specified, provide a standard list.
             Your entire response MUST be ONLY the JSON object, with no introductory text, code fences, or explanations.
         `;
         setIsLoading(true);
@@ -322,12 +312,12 @@ const GrantWizard = ({ onStartOver }) => {
                     setSelectedScopes([]);
                     setSelectedPrograms([]);
                     setSelectedFocusAreas([]);
-                    nextStep();
+                    setCurrentStep(2);
                 } else {
                     console.error("Failed to parse AI analysis: No valid JSON object found in response.", responseString);
                     setError("AI analysis could not be structured. Proceeding with summary only.");
                     setAnalysisResult({ ...analysisResult, summary: responseString });
-                    nextStep();
+                    setCurrentStep(2);
                 }
             }
             setIsLoading(false);
@@ -400,7 +390,7 @@ const GrantWizard = ({ onStartOver }) => {
                 if (parsedResult.length > 0) {
                     setSelectedConcept(parsedResult[0]);
                 }
-                nextStep();
+                setCurrentStep(3);
             }
             setIsLoading(false);
         });
@@ -856,6 +846,10 @@ const GrantWizard = ({ onStartOver }) => {
         }
     };
 
+    if (currentPage === 'landing') {
+        return <LandingPage onStart={startWizard} />;
+    }
+
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
             <div className="w-full max-w-4xl bg-white rounded-2xl shadow-xl border p-8 relative">
@@ -885,23 +879,4 @@ const GrantWizard = ({ onStartOver }) => {
             </div>
         </div>
     );
-}
-
-// This is the main component that decides whether to show the landing page or the wizard.
-export default function App() {
-    const [page, setPage] = useState('landing');
-
-    const startWizard = () => {
-        setPage('wizard');
-    };
-
-    const handleStartOver = () => {
-        setPage('landing');
-    };
-
-    if (page === 'landing') {
-        return <LandingPage onStart={startWizard} />;
-    }
-
-    return <GrantWizard onStartOver={handleStartOver} />;
 }
