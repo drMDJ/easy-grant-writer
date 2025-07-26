@@ -116,7 +116,7 @@ const LandingPage = ({ onStart }) => {
                             <h4 className="text-3xl font-bold mb-4">Easy Grant Writer Pro</h4>
                             <p className="text-gray-600 mb-6">Access all features, unlimited proposals, and priority support.</p>
                             <div className="text-5xl font-extrabold mb-6">$49 <span className="text-xl font-medium text-gray-500">/ month</span></div>
-                            <button onClick={onStart} className="w-full bg-blue-600 text-white font-bold text-lg px-8 py-4 rounded-xl shadow-lg hover:bg-blue-700 transition-all duration-300">
+                            <button onClick={onStart} className="w-full bg-blue-600 text-white font-bold text-lg px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300">
                                 Start Your Free 7-Day Trial
                             </button>
                         </div>
@@ -133,11 +133,8 @@ const LandingPage = ({ onStart }) => {
     );
 };
 
-
 // --- Main Application Component ---
-export default function GrantWizard() {
-    // --- STATE MANAGEMENT REFACTOR ---
-    // Instead of one large state object, we use individual states for clarity and reliability.
+export default function App() {
     const [currentPage, setCurrentPage] = useState('landing');
     const [currentStep, setCurrentStep] = useState(1);
     const [file, setFile] = useState(null);
@@ -201,7 +198,6 @@ export default function GrantWizard() {
 
     // --- Navigation ---
     const nextStep = () => setCurrentStep(prev => prev + 1);
-    const prevStep = () => setCurrentStep(prev => prev - 1);
     const startWizard = () => setCurrentPage('wizard');
     const handleStartOver = () => {
         setCurrentPage('wizard');
@@ -337,7 +333,7 @@ export default function GrantWizard() {
                         scopes: Array.isArray(parsedResult.scopes) ? parsedResult.scopes : [],
                         programs: Array.isArray(parsedResult.programs) ? parsedResult.programs : [],
                         focusAreas: Array.isArray(parsedResult.focusAreas) ? parsedResult.focusAreas : [],
-                        requiredSections: Array.isArray(parsedResult.requiredSections) && parsedResult.requiredSections.length > 0 ? parsedResult.requiredSections : Object.keys(initialState.sectionsToGenerate),
+                        requiredSections: Array.isArray(parsedResult.requiredSections) && parsedResult.requiredSections.length > 0 ? parsedResult.requiredSections : Object.keys(sectionsToGenerate),
                     };
                     
                     const dynamicSections = validatedResult.requiredSections.reduce((acc, section) => {
@@ -367,7 +363,12 @@ export default function GrantWizard() {
         setError('');
         try {
             const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`);
-            if (!response.ok) throw new Error('Failed to fetch content from the URL.');
+            if (!response.ok) {
+                 if(response.status === 403) {
+                    throw new Error("Could not fetch content from the URL. The website may be blocking automated access. Please try copying and pasting the text instead.");
+                }
+                throw new Error(`Failed to fetch content. Status: ${response.status}`);
+            }
             const html = await response.text();
             const doc = new DOMParser().parseFromString(html, 'text/html');
             const textContent = doc.body.textContent || "";
@@ -654,10 +655,6 @@ export default function GrantWizard() {
     };
 
     // --- Render Logic ---
-    if (currentPage === 'landing') {
-        return <LandingPage onStart={startWizard} />;
-    }
-
     const steps = [
         { id: 1, title: 'Upload Document', icon: <UploadCloud /> },
         { id: 2, title: 'AI Analysis', icon: <BrainCircuit /> },
@@ -882,6 +879,10 @@ export default function GrantWizard() {
             default: return null;
         }
     };
+
+    if (currentPage === 'landing') {
+        return <LandingPage onStart={startWizard} />;
+    }
 
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
