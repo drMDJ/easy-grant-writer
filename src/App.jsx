@@ -201,6 +201,9 @@ export default function App() {
             4.  "focusAreas": An array of objects for selectable "Focus Areas" or "Priorities". Each object must have a "name" and a "description". If none are found, return an empty array [].
             5.  "requiredSections": An array of strings listing the exact titles of all required proposal sections as outlined in the document. If not specified, provide a standard list.
             Your entire response MUST be ONLY the JSON object, with no introductory text, code fences, or explanations.
+            ---
+            ${textToAnalyze}
+            ---
         `;
         setIsLoading(true);
         setError('');
