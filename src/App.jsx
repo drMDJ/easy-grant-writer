@@ -646,6 +646,220 @@ export default function App() {
         );
     }
 
+    const renderStep = () => {
+        switch (currentStep) {
+            case 1: return (
+                <div>
+                    <div {...getRootProps()} className={`p-10 border-2 border-dashed rounded-xl text-center cursor-pointer transition-colors duration-200 ${isDragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-blue-400'}`}>
+                        <input {...getInputProps()} />
+                        <UploadCloud size={48} className="mx-auto text-gray-400 mb-4" />
+                        <p>Drag & drop RFP/NOFO file here, or click to select</p>
+                        <p className="text-sm text-gray-500 mt-1">Supports: PDF, TXT</p>
+                    </div>
+                    {file && <p className="mt-4 text-center font-medium">{file.name}</p>}
+                    <textarea value={pastedText} onChange={e => setPastedText(e.target.value)} placeholder="Or paste text here..." className="w-full h-32 p-3 mt-4 border rounded-lg" />
+                    <div className="relative my-4">
+                        <div className="absolute inset-0 flex items-center" aria-hidden="true"><div className="w-full border-t border-gray-300" /></div>
+                        <div className="relative flex justify-center"><span className="bg-white px-2 text-sm text-gray-500">OR</span></div>
+                    </div>
+                    <input type="url" value={url} onChange={e => setUrl(e.target.value)} placeholder="Enter URL of the grant opportunity" className="w-full p-3 border rounded-lg" />
+                    <button onClick={handleAnalyze} disabled={(!file && !pastedText && !url) || isLoading} className="w-full mt-4 bg-blue-600 text-white font-bold py-3 rounded-lg disabled:opacity-50 flex items-center justify-center gap-2">
+                        {isLoading ? <><Loader className="animate-spin" /> Analyzing...</> : <>Analyze & Proceed <ArrowRight /></>}
+                    </button>
+                </div>
+            );
+            case 2: return (
+                <div>
+                    <div className="p-4 bg-yellow-50 border-l-4 border-yellow-400 text-yellow-800 rounded-r-lg mb-6">
+                        <div className="flex">
+                            <div className="flex-shrink-0"><AlertTriangle className="h-5 w-5 text-yellow-500" /></div>
+                            <div className="ml-3">
+                                <h3 className="text-sm font-medium">Strategic Guidance</h3>
+                                <div className="mt-2 text-sm">
+                                    <p>For a stronger proposal, focus on the 1-2 options in each category that best align with your project's core strengths and goals. Selecting too many can make your proposal seem unfocused.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 className="text-lg font-semibold mb-2">Analysis Summary</h3>
+                    <div className="p-4 bg-gray-100 rounded-lg max-h-48 overflow-y-auto prose max-w-none prose-sm"
+                        dangerouslySetInnerHTML={{ __html: markdownToHtml(analysisResult.summary) }}
+                    />
+
+                    {analysisResult.scopes && analysisResult.scopes.length > 0 && (
+                        <div className="mt-4">
+                            <h3 className="text-lg font-semibold mb-2">Select Scope(s) of Service</h3>
+                            <div className="space-y-2">
+                                {analysisResult.scopes.map(scope => (
+                                    <label key={scope.name} className="flex flex-col items-start p-3 rounded-lg border has-[:checked]:bg-blue-50 has-[:checked]:border-blue-500 cursor-pointer">
+                                        <div className="flex items-center w-full">
+                                            <input type="checkbox" name="scope" value={scope.name} checked={selectedScopes.includes(scope.name)} onChange={() => handleSelectionChange('selectedScopes', scope.name)} className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
+                                            <span className="ml-3 font-medium">{scope.name}</span>
+                                        </div>
+                                        {scope.description && <p className="ml-7 mt-1 text-sm text-gray-600">{scope.description}</p>}
+                                    </label>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                    
+                    {analysisResult.programs && analysisResult.programs.length > 0 && (
+                        <div className="mt-4">
+                            <h3 className="text-lg font-semibold mb-2">Select Program Area(s)</h3>
+                            <div className="space-y-2">
+                                {analysisResult.programs.map(program => (
+                                    <label key={program.name} className="flex flex-col items-start p-3 rounded-lg border has-[:checked]:bg-blue-50 has-[:checked]:border-blue-500 cursor-pointer">
+                                        <div className="flex items-center w-full">
+                                            <input type="checkbox" name="program" value={program.name} checked={selectedPrograms.includes(program.name)} onChange={() => handleSelectionChange('selectedPrograms', program.name)} className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
+                                            <span className="ml-3 font-medium">{program.name}</span>
+                                        </div>
+                                        {program.description && <p className="ml-7 mt-1 text-sm text-gray-600">{program.description}</p>}
+                                    </label>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {analysisResult.focusAreas && analysisResult.focusAreas.length > 0 && (
+                        <div className="mt-4">
+                            <h3 className="text-lg font-semibold mb-2">Select Focus Area(s)</h3>
+                            <div className="space-y-2">
+                                {analysisResult.focusAreas.map(area => (
+                                     <label key={area.name} className="flex flex-col items-start p-3 rounded-lg border has-[:checked]:bg-blue-50 has-[:checked]:border-blue-500 cursor-pointer">
+                                        <div className="flex items-center w-full">
+                                            <input type="checkbox" name="focusArea" value={area.name} checked={selectedFocusAreas.includes(area.name)} onChange={() => handleSelectionChange('selectedFocusAreas', area.name)} className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
+                                            <span className="ml-3 font-medium">{area.name}</span>
+                                        </div>
+                                        {area.description && <p className="ml-7 mt-1 text-sm text-gray-600">{area.description}</p>}
+                                    </label>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                    
+                    <div className="mt-6">
+                        <label className="flex items-center space-x-3">
+                            <input type="checkbox" checked={guidanceAcknowledged} onChange={() => setGuidanceAcknowledged(!guidanceAcknowledged)} className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
+                            <span className="text-sm text-gray-600">I understand that selecting the most relevant options is best.</span>
+                        </label>
+                    </div>
+
+                    <button onClick={handleSuggestConcepts} disabled={isLoading || !guidanceAcknowledged} className="w-full mt-4 bg-blue-600 text-white font-bold py-3 rounded-lg flex items-center justify-center gap-2 disabled:opacity-50">
+                         {isLoading ? <><Loader className="animate-spin" /> Working...</> : <>Suggest Concepts & Proceed <ArrowRight /></>}
+                    </button>
+                </div>
+            );
+            case 3: return (
+                <div>
+                    <h3 className="text-lg font-semibold mb-2">Select a Project Concept</h3>
+                    <div className="space-y-2">
+                        {concepts.map(concept => (
+                            <label key={concept.name} className="flex flex-col items-start p-3 rounded-lg border has-[:checked]:bg-blue-50 has-[:checked]:border-blue-500 cursor-pointer">
+                                <div className="flex items-center w-full">
+                                    <input type="radio" name="concept" value={concept.name} checked={selectedConcept?.name === concept.name} onChange={() => setSelectedConcept(concept)} className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300" />
+                                    <span className="ml-3 font-medium">{concept.name}</span>
+                                </div>
+                                {concept.description && <p className="ml-7 mt-1 text-sm text-gray-600">{concept.description}</p>}
+                            </label>
+                        ))}
+                    </div>
+                    <button onClick={nextStep} disabled={!selectedConcept} className="w-full mt-4 bg-blue-600 text-white font-bold py-3 rounded-lg flex items-center justify-center gap-2 disabled:opacity-50">Proceed <ArrowRight /></button>
+                </div>
+            );
+            case 4: return (
+                <div className="space-y-4">
+                    <input type="text" placeholder="Organization Name" value={orgDetails.name} onChange={e => setOrgDetails({...orgDetails, name: e.target.value})} className="w-full p-3 border rounded-lg" />
+                    <textarea placeholder="Organization Mission" value={orgDetails.mission} onChange={e => setOrgDetails({...orgDetails, mission: e.target.value})} className="w-full h-24 p-3 border rounded-lg" />
+                    <textarea placeholder="Summary of Past Experience" value={orgDetails.pastExperience} onChange={e => setOrgDetails({...orgDetails, pastExperience: e.target.value})} className="w-full h-32 p-3 border rounded-lg" />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <input type="number" placeholder="Maximum Budget ($)" value={orgDetails.maxBudget} onChange={e => setOrgDetails({...orgDetails, maxBudget: e.target.value})} className="w-full p-3 border rounded-lg" />
+                        <input type="number" placeholder="Time Frame (Months)" value={orgDetails.timeFrame} onChange={e => setOrgDetails({...orgDetails, timeFrame: e.target.value})} className="w-full p-3 border rounded-lg" />
+                    </div>
+                    <button onClick={nextStep} className="w-full mt-4 bg-blue-600 text-white font-bold py-3 rounded-lg flex items-center justify-center gap-2">Save & Proceed <ArrowRight /></button>
+                </div>
+            );
+            case 5: return (
+                <div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {analysisResult.requiredSections.map(key => (
+                            <label key={key} className="flex items-center space-x-3 bg-gray-50 p-4 rounded-lg border has-[:checked]:bg-blue-50 has-[:checked]:border-blue-500 transition">
+                                <input type="checkbox" checked={sectionsToGenerate[key] || false} onChange={() => setSectionsToGenerate(prev => ({...prev, [key]: !prev[key]}))} className="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+                                <span className="font-medium text-gray-700 capitalize">{key.replace(/_/g, ' ')}</span>
+                            </label>
+                        ))}
+                    </div>
+                    <button onClick={handleGenerateSections} disabled={isLoading} className="w-full mt-6 bg-blue-600 text-white font-bold py-3 rounded-lg flex items-center justify-center gap-2 disabled:opacity-50">
+                        {isLoading ? <><Loader className="animate-spin" /> Generating...</> : <>Generate Selected Sections <ArrowRight /></>}
+                    </button>
+                </div>
+            );
+            case 6: return (
+                <div className="space-y-4">
+                    <div className="text-center p-4 text-gray-600">
+                        <Loader className="animate-spin inline-block mr-2" />
+                        Generating proposal sections... Please wait.
+                    </div>
+                    {Object.keys(sectionsToGenerate).filter(k => sectionsToGenerate[k]).map(key => (
+                        <div key={key} className="bg-gray-50 p-4 rounded-lg border">
+                            <div className="flex justify-between items-center">
+                                <h4 className="font-semibold capitalize">{key.replace(/_/g, ' ')}</h4>
+                                {generatedSections[key] ? 
+                                    (generatedSections[key].includes("## ERROR") ? <X className="text-red-500" /> : <CheckCircle className="text-green-500" />) 
+                                    : <Loader className="animate-spin text-blue-500" />}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            );
+            case 7: return (
+                <div>
+                    <h3 className="text-lg font-semibold mb-2">Final Review & Suggestions</h3>
+                    <div className="p-4 bg-gray-100 rounded-lg max-h-64 overflow-y-auto prose max-w-none prose-sm">
+                        <Typewriter text={finalReview} />
+                    </div>
+                    <div className="mt-4">
+                        <textarea value={refinementRequest} onChange={e => setRefinementRequest(e.target.value)} maxLength="1000" placeholder="Enter your refinement requests here (e.g., 'Make the introduction more compelling by adding a statistic about...')" className="w-full h-24 p-3 border rounded-lg" />
+                        <p className="text-right text-xs text-gray-500">{refinementRequest.length}/1000</p>
+                    </div>
+                    <div className="mt-4">
+                        <label className="flex items-center space-x-3">
+                            <input type="checkbox" checked={reviewAcknowledged} onChange={() => setReviewAcknowledged(!reviewAcknowledged)} className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
+                            <span className="text-sm text-gray-600">I have reviewed the AI's suggestions.</span>
+                        </label>
+                    </div>
+                    <div className="flex gap-4 mt-4">
+                        <button onClick={handleRefinement} disabled={isLoading || !reviewAcknowledged} className="w-full bg-blue-600 text-white font-bold py-3 rounded-lg flex items-center justify-center gap-2 disabled:opacity-50">
+                             {isLoading ? <><Loader className="animate-spin" /> Refining...</> : <>Apply Refinements & Regenerate <ArrowRight /></>}
+                        </button>
+                        <button onClick={nextStep} disabled={!reviewAcknowledged} className="w-full bg-gray-500 text-white font-bold py-3 rounded-lg flex items-center justify-center gap-2 disabled:opacity-50">
+                            Skip & Proceed <ArrowRight />
+                        </button>
+                    </div>
+                </div>
+            );
+            case 8: return (
+                 <div>
+                    <div id="proposal-content-wrapper" className="p-6 bg-gray-100 rounded-lg max-h-[50vh] overflow-y-auto prose max-w-none" >
+                        <div id="proposal-content" dangerouslySetInnerHTML={{ __html: markdownToHtml(finalProposal) }} />
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                        <button onClick={downloadAsPdf} disabled={!exportLibsLoaded} className="flex items-center justify-center gap-2 p-3 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition disabled:opacity-50">
+                            <FileDown size={18} /> Download as PDF
+                        </button>
+                         <button onClick={copyAsRichText} className="flex items-center justify-center gap-2 p-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition">
+                            <Copy size={18} /> {copyStatus}
+                        </button>
+                        <button onClick={downloadAsMarkdown} className="flex items-center justify-center gap-2 p-3 bg-gray-600 text-white font-semibold rounded-lg hover:bg-gray-700 transition">
+                            <Download size={18} /> Download as Text
+                        </button>
+                    </div>
+                </div>
+            );
+            default: return null;
+        }
+    };
+
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
             <div className="w-full max-w-4xl bg-white rounded-2xl shadow-xl border p-8 relative">
