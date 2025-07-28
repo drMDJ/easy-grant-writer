@@ -860,35 +860,31 @@ export default function App() {
         }
     };
 
-    if (currentPage === 'wizard') {
-        return (
-            <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
-                <div className="w-full max-w-4xl bg-white rounded-2xl shadow-xl border p-8 relative">
-                    <button onClick={handleStartOver} className="absolute top-4 right-4 text-gray-400 hover:text-blue-600 transition-colors flex items-center gap-1 text-sm font-medium">
-                        <RefreshCw size={14} />
-                        Start Over
-                    </button>
-                    <div className="flex items-center justify-center mb-8">
-                        {steps.map((step, index) => (
-                            <React.Fragment key={step.id}>
-                                <div className="flex flex-col items-center">
-                                    <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 ${currentStep >= step.id ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-500'}`}>
-                                        {currentStep > step.id ? <CheckCircle /> : step.icon}
-                                    </div>
-                                    <p className={`mt-2 text-xs text-center font-semibold ${currentStep >= step.id ? 'text-blue-600' : 'text-gray-500'}`}>{step.title}</p>
+    return (
+        <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
+            <div className="w-full max-w-4xl bg-white rounded-2xl shadow-xl border p-8 relative">
+                <button onClick={handleStartOver} className="absolute top-4 right-4 text-gray-400 hover:text-blue-600 transition-colors flex items-center gap-1 text-sm font-medium">
+                    <RefreshCw size={14} />
+                    Start Over
+                </button>
+                <div className="flex items-center justify-center mb-8">
+                    {steps.map((step, index) => (
+                        <React.Fragment key={step.id}>
+                            <div className="flex flex-col items-center">
+                                <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 ${currentStep >= step.id ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-500'}`}>
+                                    {currentStep > step.id ? <CheckCircle /> : step.icon}
                                 </div>
-                                {index < steps.length - 1 && <div className={`flex-auto h-1 transition-colors duration-300 mx-2 ${currentStep > step.id ? 'bg-blue-600' : 'bg-gray-200'}`}></div>}
-                            </React.Fragment>
-                        ))}
-                    </div>
-                    <h2 className="text-2xl font-bold text-center mb-2">{steps.find(s => s.id === currentStep).title}</h2>
-                    <p className="text-gray-500 text-center mb-8">Step {currentStep} of {steps.length}</p>
-                    {error && <p className="text-red-600 bg-red-100 p-3 rounded-lg mb-4 text-center">{error}</p>}
-                    {renderStep()}
+                                <p className={`mt-2 text-xs text-center font-semibold ${currentStep >= step.id ? 'text-blue-600' : 'text-gray-500'}`}>{step.title}</p>
+                            </div>
+                            {index < steps.length - 1 && <div className={`flex-auto h-1 transition-colors duration-300 mx-2 ${currentStep > step.id ? 'bg-blue-600' : 'bg-gray-200'}`}></div>}
+                        </React.Fragment>
+                    ))}
                 </div>
+                <h2 className="text-2xl font-bold text-center mb-2">{steps.find(s => s.id === currentStep).title}</h2>
+                <p className="text-gray-500 text-center mb-8">Step {currentStep} of {steps.length}</p>
+                {error && <p className="text-red-600 bg-red-100 p-3 rounded-lg mb-4 text-center">{error}</p>}
+                {renderStep()}
             </div>
-        );
-    }
-
-    return <LandingPage onStart={startWizard} />;
+        </div>
+    );
 }
