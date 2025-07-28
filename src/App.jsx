@@ -576,7 +576,74 @@ export default function App() {
     ];
     
     if (currentPage === 'landing') {
-        return <LandingPage onStart={startWizard} />;
+        const features = [
+            { icon: <BrainCircuit />, title: "AI-Powered Analysis", description: "Deeply analyzes your funding documents to extract key requirements and priorities." },
+            { icon: <Sparkles />, title: "Strategic Suggestions", description: "Recommends project concepts tailored to funder priorities and your experience." },
+            { icon: <FileSignature />, title: "Section-by-Section Generation", description: "Generate only the sections you need, with real-time progress visualization." },
+            { icon: <Target />, title: "Optimized for Scoring", description: "Crafts persuasive, highly-readable content designed to maximize your evaluation score." },
+        ];
+        return (
+            <div className="bg-white text-gray-800">
+                <header className="container mx-auto px-6 py-4 flex justify-between items-center">
+                    <div>
+                        <h1 className="text-2xl font-bold text-blue-600">Easy Grant Writer</h1>
+                        <p className="text-sm text-gray-500 -mt-1">Your AI Partner in Grant Writing</p>
+                    </div>
+                    <button onClick={startWizard} className="bg-blue-600 text-white font-semibold px-6 py-2 rounded-lg hover:bg-blue-700 transition">Get Started</button>
+                </header>
+                <main>
+                    <section className="text-center py-20 px-6 bg-gray-50">
+                        <h2 className="text-5xl font-extrabold mb-4">The Easy Way to Write Winning Grant Proposals.</h2>
+                        <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">From RFP to ready-to-submit, faster. Leverage AI to analyze funding opportunities, develop strategic concepts, and write compelling proposals that get noticed.</p>
+                        <button onClick={startWizard} className="bg-blue-600 text-white font-bold text-lg px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300">
+                            Start Your Proposal Now <ArrowRight className="inline ml-2" />
+                        </button>
+                    </section>
+                    <section id="features" className="py-20 px-6">
+                        <div className="container mx-auto">
+                            <h3 className="text-4xl font-bold text-center mb-12">Features</h3>
+                            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                                {features.map((feature, i) => (
+                                    <div key={i} className="bg-gray-50 p-8 rounded-2xl border border-gray-200 text-center">
+                                        <div className="bg-blue-100 text-blue-600 p-4 rounded-full inline-block mb-4">{React.cloneElement(feature.icon, { size: 32 })}</div>
+                                        <h4 className="text-xl font-semibold mb-2">{feature.title}</h4>
+                                        <p className="text-gray-600">{feature.description}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+                    <section id="how-it-works" className="py-20 px-6 bg-gray-50">
+                        <div className="container mx-auto">
+                            <h3 className="text-4xl font-bold text-center mb-12">How It Works</h3>
+                            <div className="relative">
+                                <div className="hidden md:block absolute top-1/2 left-0 w-full h-0.5 bg-gray-300 -translate-y-1/2"></div>
+                                 <div className="grid md:grid-cols-3 gap-12 text-center relative">
+                                    <div className="space-y-4"><div className="bg-white border-2 border-blue-500 text-blue-500 w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold mx-auto">1</div><h4 className="text-xl font-semibold">Upload & Analyze</h4><p className="text-gray-600">Provide the funder's guidelines (PDF, TXT, or pasted text). Our AI breaks it down in seconds.</p></div>
+                                    <div className="space-y-4"><div className="bg-white border-2 border-blue-500 text-blue-500 w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold mx-auto">2</div><h4 className="text-xl font-semibold">Develop & Refine</h4><p className="text-gray-600">Get project concept suggestions, input your organization's details, and select the proposal sections you need.</p></div>
+                                    <div className="space-y-4"><div className="bg-white border-2 border-blue-500 text-blue-500 w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold mx-auto">3</div><h4 className="text-xl font-semibold">Generate & Download</h4><p className="text-gray-600">Watch as your proposal is written in real-time. Review the final document and download it with one click.</p></div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section id="pricing" className="py-20 px-6">
+                        <div className="container mx-auto max-w-4xl">
+                            <h3 className="text-4xl font-bold text-center mb-12">Pricing</h3>
+                            <div className="bg-white p-10 rounded-2xl shadow-lg border border-gray-200 text-center">
+                                <h4 className="text-3xl font-bold mb-4">Easy Grant Writer Pro</h4>
+                                <p className="text-gray-600 mb-6">Access all features, unlimited proposals, and priority support.</p>
+                                <div className="text-5xl font-extrabold mb-6">$49 <span className="text-xl font-medium text-gray-500">/ month</span></div>
+                                <button onClick={startWizard} className="w-full bg-blue-600 text-white font-bold text-lg px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300">Start Your Free 7-Day Trial</button>
+                            </div>
+                        </div>
+                    </section>
+                </main>
+                <footer className="container mx-auto px-6 py-10 text-center text-gray-500">
+                    <p className="text-sm"><strong>Disclaimer:</strong> Easy Grant Writer is a powerful tool designed to assist in creating high-quality grant proposals. While it aims to produce competitive and compliant documents, its use does not guarantee a grant award. Funding decisions depend on numerous factors, including the merits of the project, the funder's priorities, and the quality of competing applications.</p>
+                    <p className="text-xs mt-4">&copy; {new Date().getFullYear()} Easy Grant Writer. All Rights Reserved.</p>
+                </footer>
+            </div>
+        );
     }
 
     const renderStep = () => {
