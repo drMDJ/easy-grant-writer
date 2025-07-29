@@ -151,8 +151,7 @@ export default function App() {
         try {
             const apiKey = (typeof import.meta !== 'undefined' && import.meta.env) ? import.meta.env.VITE_GEMINI_API_KEY : "";
             if (!apiKey && window.location.hostname !== 'localhost') {
-                 setError("API Key is not configured. Please set it in your Vercel project settings.");
-                 return null;
+                 throw new Error("API Key is not configured. Please set it in your Vercel project settings.");
             }
 
             let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
@@ -188,7 +187,7 @@ export default function App() {
 
         } catch (e) {
             setError(e.message);
-            return null;
+            throw e;
         }
     };
 
@@ -248,6 +247,10 @@ export default function App() {
                     nextStep();
                 }
             }
+            setIsLoading(false);
+        }).catch(err => {
+            console.error("Unhandled error in analyzeText:", err);
+            setError(err.message || "Something went wrong during analysis.");
             setIsLoading(false);
         });
     };
@@ -321,6 +324,10 @@ export default function App() {
                 nextStep();
             }
             setIsLoading(false);
+        }).catch(err => {
+            console.error("Unhandled error in handleSuggestConcepts:", err);
+            setError(err.message || "Something went wrong while suggesting concepts.");
+            setIsLoading(false);
         });
     };
 
@@ -385,11 +392,17 @@ export default function App() {
             }
 
             const sectionPrompt = `${basePrompt}\n\nTASK: ${specificTask}`;
-            const generatedText = await runAIPromise(sectionPrompt);
-            const textToUse = `## ${key}\n\n` + (generatedText || `Could not generate the '${key}' section.`);
-            
-            tempGeneratedSections[key] = textToUse;
-            setGeneratedSections(prev => ({ ...prev, [key]: textToUse }));
+            try {
+                const generatedText = await runAIPromise(sectionPrompt);
+                const textToUse = `## ${key}\n\n` + (generatedText || `Could not generate the '${key}' section.`);
+                
+                tempGeneratedSections[key] = textToUse;
+                setGeneratedSections(prev => ({ ...prev, [key]: textToUse }));
+            } catch (err) {
+                console.error(`Error generating section ${key}:`, err);
+                tempGeneratedSections[key] = `## ${key}\n\n## ERROR: Could not generate this section.`;
+                setGeneratedSections(prev => ({ ...prev, [key]: tempGeneratedSections[key] }));
+            }
         }
         
         const assembledProposal = sectionsToRun.map(key => tempGeneratedSections[key]).join('\n\n\n');
@@ -408,8 +421,13 @@ export default function App() {
             ---
             Your task is to provide a final review. Ensure your writing is professional, clear, and free of typos. Identify the proposal's strengths and, most importantly, provide a bulleted list of specific, actionable suggestions for any final refinements that could boost the score. Check for alignment with requirements, clarity, persuasiveness, and any potential disqualifiers.
         `;
-        const reviewText = await runAIPromise(reviewPrompt);
-        setFinalReview(reviewText || "Could not generate a final review.");
+        try {
+            const reviewText = await runAIPromise(reviewPrompt);
+            setFinalReview(reviewText || "Could not generate a final review.");
+        } catch (err) {
+            console.error("Error generating final review:", err);
+            setFinalReview("Could not generate a final review due to an error.");
+        }
 
         setIsLoading(false);
         nextStep(); // Move to the new Final Review step
@@ -440,10 +458,15 @@ export default function App() {
             Rewrite and return the **entire, complete, and improved** proposal, incorporating the suggestions from the AI review and the user's requests. Ensure the final output is a single, cohesive document that is polished and ready for submission.
         `;
         
-        const refinedProposal = await runAIPromise(refinementPrompt);
-        if (refinedProposal) {
-            setFinalProposal(refinedProposal);
-            setRefinementRequest('');
+        try {
+            const refinedProposal = await runAIPromise(refinementPrompt);
+            if (refinedProposal) {
+                setFinalProposal(refinedProposal);
+                setRefinementRequest('');
+            }
+        } catch (err) {
+            console.error("Error refining proposal:", err);
+            setError(err.message || "Something went wrong during refinement.");
         }
         setIsLoading(false);
         nextStep(); // Move to the final download step
