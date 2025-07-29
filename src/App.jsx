@@ -151,7 +151,8 @@ export default function App() {
         try {
             const apiKey = (typeof import.meta !== 'undefined' && import.meta.env) ? import.meta.env.VITE_GEMINI_API_KEY : "";
             if (!apiKey && window.location.hostname !== 'localhost') {
-                 throw new Error("API Key is not configured. Please set it in your Vercel project settings.");
+                 setError("API Key is not configured. Please set it in your Vercel project settings.");
+                 return null;
             }
 
             let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
