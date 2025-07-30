@@ -244,7 +244,13 @@ export default function App() {
                 } else {
                     console.error("Failed to parse AI analysis: No valid JSON object found in response.", responseString);
                     setError("AI analysis could not be structured. Proceeding with summary only.");
-                    setAnalysisResult({ ...analysisResult, summary: responseString });
+                    setAnalysisResult({
+                        summary: responseString || "An error occurred during analysis.",
+                        scopes: [],
+                        programs: [],
+                        focusAreas: [],
+                        requiredSections: []
+                    });
                     nextStep();
                 }
             }
