@@ -107,6 +107,7 @@ export default function App() {
         setSectionsToGenerate({}); setGeneratedSections({}); setFinalProposal('');
         setFinalReview(''); setRefinementRequest(''); setError('');
         setGuidanceAcknowledged(false); setReviewAcknowledged(false);
+        setIsLoading(false);
     };
 
     const nextStep = () => setCurrentStep(prev => prev + 1);
@@ -150,7 +151,7 @@ export default function App() {
     const runAIPromise = async (prompt) => {
         try {
             const apiKey = (typeof import.meta !== 'undefined' && import.meta.env) ? import.meta.env.VITE_GEMINI_API_KEY : "";
-            if (!apiKey && window.location.hostname !== 'localhost') {
+            if (!apiKey && window.location.hostname !== 'localhost' && window.location.hostname !== '') {
                  setError("API Key is not configured. Please set it in your Vercel project settings.");
                  return null;
             }
@@ -188,7 +189,7 @@ export default function App() {
 
         } catch (e) {
             setError(e.message);
-            throw e;
+            return null;
         }
     };
 
@@ -346,7 +347,7 @@ export default function App() {
         const fullProposalText = [];
 
         const basePrompt = `
-            You are an expert grant writer. Ensure your response is well-written, professional, and free of typos. Use the following information to generate the requested proposal section.
+            You are an expert grant writer. Ensure your response is well-written, professional, and free of typos. Before responding, double-check your writing for any typos or grammatical errors. For example, ensure words like "this" are not misspelled as "tis".
             
             FUNDER REQUIREMENTS:
             ${analysisResult.summary}
@@ -417,7 +418,7 @@ export default function App() {
         
         // Now, run the final review
         const reviewPrompt = `
-            Act as a meticulous grant reviewer. I have generated a grant proposal based on a funding announcement.
+            Act as a meticulous grant reviewer. I have generated a grant proposal based on a funding announcement. Before responding, double-check your writing for any typos or grammatical errors.
             First, here is the summary of the funder's requirements:
             ---
             ${analysisResult.summary}
@@ -443,7 +444,7 @@ export default function App() {
     const handleRefinement = async () => {
         setIsLoading(true);
         const refinementPrompt = `
-            You are an expert grant writer. A draft proposal has been generated. Your task is to revise it based on the AI's own review and additional user instructions.
+            You are an expert grant writer. A draft proposal has been generated. Your task is to revise it based on the AI's own review and additional user instructions. Before responding, double-check your writing for any typos or grammatical errors.
             
             **Original Funder Requirements Summary:**
             ---
