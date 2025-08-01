@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+ import React, { useState, useEffect, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { Loader, UploadCloud, FileText, X, Download, ChevronsRight, Award, ClipboardCheck, DollarSign, Users, Clock, BarChart2, Briefcase, Target, CheckCircle, ArrowRight, BrainCircuit, Building, FileSignature, Eye, Sparkles, Copy, FileDown, RefreshCw, AlertTriangle, Check } from 'lucide-react';
 
@@ -919,4 +919,4 @@ export default function App() {
         </div>
     );
 }
-       
+      
